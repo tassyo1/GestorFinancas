@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Banco extends SQLiteOpenHelper {
     private static final String NOME_BANCO = "gerencia_financas.db";
 
+    private static final int VERSAO = 1;
+
     private static final String TABLE_CATEGORIA = "CREATE TABLE categorias (id integer primary key "
             + "autoincrement, nome text, valor real, data_agendada text, tipo text, frequencia_id integer)";
 
@@ -28,8 +30,9 @@ public class Banco extends SQLiteOpenHelper {
 
     public Banco(Context context)
     {
-        super(context,NOME_BANCO,null,1);
+        super(context,NOME_BANCO,null,VERSAO);
     }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TABLE_CATEGORIA);
@@ -40,6 +43,12 @@ public class Banco extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+        // on upgrade drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORIA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_FREQUENCIA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MOVIMENTO);
 
+        // create new tables
+        onCreate(db);
     }
 }
