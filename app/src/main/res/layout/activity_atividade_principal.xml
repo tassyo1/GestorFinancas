@@ -10,69 +10,87 @@
     tools:context="com.example.tassyosantana.gestorfinancas.AtividadePrincipal">
 
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+"
-        android:id="@+id/adicionaCategoria"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/adicionaCategoria"
-        android:layout_above="@+id/gridView">
+        android:stretchColumns="1,2">
 
-        <TextView
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
+
+            <ImageButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/adicionaCategoria"
+                android:layout_column="0"
+                android:src="@drawable/button_plus"
+                android:background="@null"
+                android:layout_gravity="left"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Categoria"
+                android:id="@+id/labelCategoria"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_column="0"
+                 />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Valor"
+                android:id="@+id/labelValor"
+                android:layout_gravity="center"
+                android:layout_column="1"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Data"
+                android:id="@+id/labelData"
+                android:layout_gravity="center"
+                android:layout_column="2"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Saldo Atual"
+                android:id="@+id/labelSaldo"
+                android:layout_column="3"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false">
+
+        <GridView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categoria"
-            android:id="@+id/labelCategoria"
-            android:layout_above="@+id/gridView"
+            android:id="@+id/gridView"
+            android:layout_column="0"
+            android:numColumns="4"
+            android:layout_span="4"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
-            android:layout_marginTop="25dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Valor"
-            android:id="@+id/labelValor"
-            android:layout_marginStart="50dp"
-            android:layout_above="@+id/gridView"
-            android:layout_toEndOf="@+id/labelCategoria"
-            android:layout_marginTop="25dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Data"
-            android:id="@+id/labelData"
-            android:layout_marginStart="50dp"
-            android:layout_above="@+id/gridView"
-            android:layout_toStartOf="@+id/labelSaldo"
-            android:layout_marginTop="25dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Saldo Atual"
-            android:id="@+id/labelSaldo"
-            android:layout_marginStart="50dp"
-            android:layout_above="@+id/gridView"
-            android:layout_alignEnd="@+id/gridView"
-            android:layout_marginTop="25dp" />
-    </LinearLayout>
-
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gridView"
-        android:numColumns="4"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+            />
+        </TableRow>
+    </TableLayout>
 
 
 

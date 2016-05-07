@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class AtividadePrincipal extends AppCompatActivity {
 
@@ -14,9 +15,7 @@ public class AtividadePrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_atividade_principal);
 
 
-
-
-        Button adicionaCategoria = (Button) findViewById(R.id.adicionaCategoria);
+        ImageButton adicionaCategoria = (ImageButton) findViewById(R.id.adicionaCategoria);
         adicionaCategoria.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
