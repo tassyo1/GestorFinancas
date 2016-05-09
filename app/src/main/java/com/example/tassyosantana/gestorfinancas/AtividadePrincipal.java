@@ -14,7 +14,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -33,22 +32,20 @@ public class AtividadePrincipal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
-
-
+        
         ArrayList <String> a = new ArrayList<String>();
 
-        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
-        if (movimentoDAO.getAllMovimentos().size() > 0){
+        MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
+        if (movimentoDados.getAllMovimentos().size() > 0){
 
-            for (int i = 0; i < movimentoDAO.getAllMovimentos().size(); i++){
-                a.add(movimentoDAO.getAllMovimentos().get(i).getNome_categoria()+"\n"
-                +movimentoDAO.getAllMovimentos().get(i).getData_lancamento());
+            for (int i = 0; i < movimentoDados.getAllMovimentos().size(); i++){
+                a.add(movimentoDados.getAllMovimentos().get(i).getNome_categoria()+"\n"
+                +movimentoDados.getAllMovimentos().get(i).getData_lancamento());
 
-                a.add(movimentoDAO.getAllMovimentos().get(i).getValor().toString());
+                a.add(movimentoDados.getAllMovimentos().get(i).getValor().toString());
             }
-        //
         TextView saldo = (TextView)findViewById(R.id.labelSaldoAtual);
-        saldo.setText(movimentoDAO.getAllMovimentos().get(0).getSaldo_atual().toString());
+        saldo.setText(movimentoDados.getAllMovimentos().get(0).getSaldo_atual().toString());
         }
         grid = (GridView) findViewById(R.id.gridView);
 
@@ -96,7 +93,6 @@ public class AtividadePrincipal extends AppCompatActivity {
     }
 
     public void proximaTela(View view){
-        ImageButton adicionaCategoria = (ImageButton) findViewById(R.id.adicionaCategoria);
         Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
         startActivityForResult(Activity2, 1);
         finish();

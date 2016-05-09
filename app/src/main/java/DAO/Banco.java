@@ -3,6 +3,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 /**
  * Created by tassyosantana on 05/05/16.
  */
@@ -20,13 +22,14 @@ public class Banco extends SQLiteOpenHelper {
     private static final String TABLE_MOVIMENTO = "CREATE TABLE movimentos (id integer primary key "
             +"autoincrement, data_lancamento text, saldo_atual real, categoria_id integer)";
 
-    private static final String INSERT_FREQUENCIA =
-            "INSERT INTO frequencias (descricao) VALUES ('eventual'); "+
-            "INSERT INTO frequencias (descricao) VALUES ('mensal'); "+
-            "INSERT INTO frequencias (descricao) VALUES ('bimestral'); "+
-            "INSERT INTO frequencias (descricao) VALUES ('trimestral'); "+
-            "INSERT INTO frequencias (descricao) VALUES ('semestral'); "+
-            "INSERT INTO frequencias (descricao) VALUES ('anual');";
+    //Nao foi possivel usar array para inserir com loop, ocorria falta de memoria
+    private static final String EVENTUAL = " INSERT INTO frequencias (descricao) VALUES ('eventual'); ";
+    private static final String MENSAL =    " INSERT INTO frequencias (descricao) VALUES ('mensal');  ";
+    private static final String BIMESTRAL = " INSERT INTO frequencias (descricao) VALUES ('bimestral'); ";
+    private static final String TRIMESTRAL = " INSERT INTO frequencias (descricao) VALUES ('trimestral');";
+    private static final String SEMESTRAL = " INSERT INTO frequencias (descricao) VALUES ('semestral'); ";
+    private static final String ANUAL = " INSERT INTO frequencias (descricao) VALUES ('anual');";
+
 
     public Banco(Context context)
     {
@@ -38,7 +41,12 @@ public class Banco extends SQLiteOpenHelper {
         db.execSQL(TABLE_CATEGORIA);
         db.execSQL(TABLE_FREQUENCIA);
         db.execSQL(TABLE_MOVIMENTO);
-        db.execSQL(INSERT_FREQUENCIA);
+        db.execSQL(EVENTUAL);
+        db.execSQL(MENSAL);
+        db.execSQL(BIMESTRAL);
+        db.execSQL(TRIMESTRAL);
+        db.execSQL(SEMESTRAL);
+        db.execSQL(ANUAL);
     }
 
     @Override

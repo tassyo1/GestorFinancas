@@ -24,7 +24,6 @@ public class MovimentoDAO  {
         banco = new Banco(context);
 
     }
-
     public String inserir(String data_lancamento, Float saldo, Integer categoria_id){
         ContentValues valores;
         long resultado;
