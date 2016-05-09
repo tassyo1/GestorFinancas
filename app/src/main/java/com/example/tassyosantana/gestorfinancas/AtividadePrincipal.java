@@ -28,21 +28,12 @@ public class AtividadePrincipal extends AppCompatActivity {
     GridView grid;
     ArrayAdapter<String> adapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
 
-        //clique do imagebutton para outra tela
-        ImageButton adicionaCategoria = (ImageButton) findViewById(R.id.adicionaCategoria);
-        adicionaCategoria.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
-                startActivityForResult(Activity2, 1);
-                finish();
-            }
-        });
 
         ArrayList <String> a = new ArrayList<String>();
 
@@ -86,9 +77,7 @@ public class AtividadePrincipal extends AppCompatActivity {
                 return tv;
             }
         };
-
         grid.setAdapter(adapter);
-
 
         grid.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -98,7 +87,6 @@ public class AtividadePrincipal extends AppCompatActivity {
             }
         });
     }
-
     // DP para pixels
     public static int getPixelsFromDPs(Activity activity, int dps){
         Resources r = activity.getResources();
@@ -106,4 +94,12 @@ public class AtividadePrincipal extends AppCompatActivity {
                 TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
         return px;
     }
+
+    public void proximaTela(View view){
+        ImageButton adicionaCategoria = (ImageButton) findViewById(R.id.adicionaCategoria);
+        Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
+        startActivityForResult(Activity2, 1);
+        finish();
+    }
+
 }

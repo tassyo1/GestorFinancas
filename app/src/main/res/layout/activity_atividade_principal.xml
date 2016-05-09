@@ -26,9 +26,9 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/adicionaCategoria"
                 android:layout_column="0"
-                android:src="@drawable/button_plus"
-                android:background="@null"
-                android:layout_gravity="left"/>
+                android:background="@drawable/plus_button"
+                android:layout_gravity="left"
+                android:onClick="proximaTela"/>
         </TableRow>
 
         <TableRow
@@ -67,8 +67,6 @@
                 android:layout_column="0"
                 android:layout_gravity="left"
                  />
-
-
 
             <TextView
                 android:layout_width="match_parent"
