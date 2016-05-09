@@ -55,6 +55,7 @@
                     android:text="receitas"
                     android:id="@+id/radioReceita"
                     android:layout_column="1" />
+
             </RadioGroup>
         </TableRow>
 
@@ -95,6 +96,7 @@
                 android:id="@+id/listaFrequencia"
                 android:layout_column="1"
                 android:layout_width="10dp"
+
                 android:layout_height="wrap_content" />
         </TableRow>
 
@@ -105,7 +107,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="À partir de: "
+                android:text="Data:  "
                 android:id="@+id/textView4"
                 android:layout_column="0" />
 

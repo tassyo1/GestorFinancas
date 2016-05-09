@@ -71,14 +71,14 @@ public class AtividadePrincipal extends AppCompatActivity {
                 params.width = getPixelsFromDPs(AtividadePrincipal.this, 175);
                 tv.setLayoutParams(params);
 
+
                 return tv;
             }
         };
         grid.setAdapter(adapter);
 
         grid.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v,
-                                    int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Toast.makeText(getApplicationContext(),
                         ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
             }
@@ -97,5 +97,7 @@ public class AtividadePrincipal extends AppCompatActivity {
         startActivityForResult(Activity2, 1);
         finish();
     }
+
+
 
 }
