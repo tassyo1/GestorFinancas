@@ -3,6 +3,7 @@ package com.example.tassyosantana.gestorfinancas;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -20,6 +21,9 @@ import android.widget.Toast;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+import DAO.MovimentoDAO;
+
+
 public class AtividadePrincipal extends AppCompatActivity {
     GridView grid;
     ArrayAdapter<String> adapter;
@@ -32,7 +36,6 @@ public class AtividadePrincipal extends AppCompatActivity {
         //clique do imagebutton para outra tela
         ImageButton adicionaCategoria = (ImageButton) findViewById(R.id.adicionaCategoria);
         adicionaCategoria.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
@@ -42,14 +45,20 @@ public class AtividadePrincipal extends AppCompatActivity {
         });
 
         ArrayList <String> a = new ArrayList<String>();
-        a.add("lanche");
-        a.add("-500000,00");
-        a.add("30/04/2015");
-        a.add("20000,00");
-        a.add("TV à cabo");
-        a.add("-150,00");
-        a.add("05/05/2016");
-        a.add("100000000,00");
+
+        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+        if (movimentoDAO.getAllMovimentos().size() > 0){
+
+            for (int i = 0; i < movimentoDAO.getAllMovimentos().size(); i++){
+                a.add(movimentoDAO.getAllMovimentos().get(i).getNome_categoria()+"\n"
+                +movimentoDAO.getAllMovimentos().get(i).getData_lancamento());
+
+                a.add(movimentoDAO.getAllMovimentos().get(i).getValor().toString());
+            }
+        //
+        TextView saldo = (TextView)findViewById(R.id.labelSaldoAtual);
+        saldo.setText(movimentoDAO.getAllMovimentos().get(0).getSaldo_atual().toString());
+        }
         grid = (GridView) findViewById(R.id.gridView);
 
 
@@ -65,11 +74,13 @@ public class AtividadePrincipal extends AppCompatActivity {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                         AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT
                 );
+
                 tv.setLayoutParams(lp);
 
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tv.getLayoutParams();
-                params.height = getPixelsFromDPs(AtividadePrincipal.this,25);
-                params.width = getPixelsFromDPs(AtividadePrincipal.this, 150);
+                tv.setBackgroundColor(Color.WHITE);
+                params.height = getPixelsFromDPs(AtividadePrincipal.this,50);
+                params.width = getPixelsFromDPs(AtividadePrincipal.this, 175);
                 tv.setLayoutParams(params);
 
                 return tv;
@@ -87,7 +98,8 @@ public class AtividadePrincipal extends AppCompatActivity {
             }
         });
     }
-    // Method for converting DP value to pixels
+
+    // DP para pixels
     public static int getPixelsFromDPs(Activity activity, int dps){
         Resources r = activity.getResources();
         int  px = (int) (TypedValue.applyDimension(

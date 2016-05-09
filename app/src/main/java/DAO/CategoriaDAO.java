@@ -28,6 +28,7 @@ public class CategoriaDAO {
         valores.put("nome",nome);
         valores.put("frequencia_id",frequencia_id);
         valores.put("data_agendada",data.toString());
+        valores.put("valor",valor);
         resultado = db.insert("categorias",null,valores);
         db.close();
 

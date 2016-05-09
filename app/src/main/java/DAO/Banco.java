@@ -18,10 +18,10 @@ public class Banco extends SQLiteOpenHelper {
             +"autoincrement, descricao text)";
 
     private static final String TABLE_MOVIMENTO = "CREATE TABLE movimentos (id integer primary key "
-            +"autoincrement, data_lacamento text, saldo_atual real, categoria_id integer)";
+            +"autoincrement, data_lancamento text, saldo_atual real, categoria_id integer)";
 
     private static final String INSERT_FREQUENCIA =
-            "INSERT INTO frequencias (descricao) VALUES ('enventual'); "+
+            "INSERT INTO frequencias (descricao) VALUES ('eventual'); "+
             "INSERT INTO frequencias (descricao) VALUES ('mensal'); "+
             "INSERT INTO frequencias (descricao) VALUES ('bimestral'); "+
             "INSERT INTO frequencias (descricao) VALUES ('trimestral'); "+
