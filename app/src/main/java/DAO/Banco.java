@@ -13,14 +13,16 @@ public class Banco extends SQLiteOpenHelper {
 
     private static final int VERSAO = 1;
 
-    private static final String TABLE_CATEGORIA = "CREATE TABLE categorias (id integer primary key "
-            + "autoincrement, nome text, valor real, data_agendada text, tipo text, frequencia_id integer)";
-
     private static final String TABLE_FREQUENCIA = "CREATE TABLE frequencias (id integer primary key "
             +"autoincrement, descricao text)";
 
+    private static final String TABLE_CATEGORIA = "CREATE TABLE categorias (id integer primary key "
+            + "autoincrement, nome text, valor real, data_agendada text, tipo text, frequencia_id integer, " +
+            "FOREIGN KEY(frequencia_id) REFERENCES frequencias(id) );";
+
     private static final String TABLE_MOVIMENTO = "CREATE TABLE movimentos (id integer primary key "
-            +"autoincrement, data_lancamento text, saldo_atual real, categoria_id integer)";
+            +"autoincrement, data_lancamento date, saldo_atual real, categoria_id integer, " +
+            "FOREIGN KEY(categoria_id) REFERENCES categorias(id) );";
 
     //Nao foi possivel usar array para inserir com loop, ocorria falta de memoria
     private static final String EVENTUAL = " INSERT INTO frequencias (descricao) VALUES ('eventual'); ";
