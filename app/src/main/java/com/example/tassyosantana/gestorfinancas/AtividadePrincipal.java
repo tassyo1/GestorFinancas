@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import DAO.MovimentoDAO;
+import Servicos.ServicoBanco;
 
 
 public class AtividadePrincipal extends AppCompatActivity {
@@ -32,9 +33,12 @@ public class AtividadePrincipal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
-        
-        ArrayList <String> a = new ArrayList<String>();
 
+        //iniciando o Serviço do Banco
+        startService(new Intent(this, ServicoBanco.class));
+
+
+        ArrayList <String> a = new ArrayList<String>();
         MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
         if (movimentoDados.getAllMovimentos().size() > 0){
 
@@ -82,6 +86,8 @@ public class AtividadePrincipal extends AppCompatActivity {
                         ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
             }
         });
+
+
     }
 
 

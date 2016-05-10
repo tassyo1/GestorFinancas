@@ -47,7 +47,7 @@
                     android:text="despesas"
                     android:id="@+id/radioDespesa"
                     android:layout_column="0"
-                     />
+                    android:checked="true" />
 
                 <RadioButton
                     android:layout_width="wrap_content"

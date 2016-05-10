@@ -16,6 +16,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".SegundaAtividade"></activity>
+
+        <service android:name="Servicos.ServicoBanco"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>
