@@ -21,7 +21,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import DAO.MovimentoDAO;
-import Servicos.ServicoBanco;
+import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
 
 
 public class AtividadePrincipal extends AppCompatActivity {
@@ -35,7 +35,7 @@ public class AtividadePrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_atividade_principal);
 
         //iniciando o Serviço do Banco
-        startService(new Intent(this, ServicoBanco.class));
+        startService(new Intent(this,ServicoBanco.class));
 
 
         ArrayList <String> a = new ArrayList<String>();

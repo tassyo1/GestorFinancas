@@ -1,9 +1,9 @@
-package Servicos;
+package com.example.tassyosantana.gestorfinancas.Servicos;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
+import android.util.Log;
 
 import DAO.MovimentoDAO;
 
@@ -18,6 +18,7 @@ public class ServicoBanco extends Service implements Runnable {
     public void onCreate() {
         Thread thread = new Thread(this);
         thread.start();
+        Log.d("Serviço", "Serviço criado");
         super.onCreate();
     }
 
@@ -28,11 +29,12 @@ public class ServicoBanco extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
+        Log.d("Serviço", "Serviço destruido");
         super.onDestroy();
     }
 
     private void fazAlgo(){
-        Toast.makeText(this,"Estou fazendo algo",Toast.LENGTH_SHORT).show();
+        Log.d("Serviço","Estou fazendo algo");
     }
     /*private void geraMovimento(){
 
