@@ -71,7 +71,6 @@ public class AtividadePrincipal extends AppCompatActivity {
                 params.width = getPixelsFromDPs(AtividadePrincipal.this, 175);
                 tv.setLayoutParams(params);
 
-
                 return tv;
             }
         };
@@ -84,6 +83,8 @@ public class AtividadePrincipal extends AppCompatActivity {
             }
         });
     }
+
+
     // DP para pixels
     public static int getPixelsFromDPs(Activity activity, int dps){
         Resources r = activity.getResources();
@@ -97,7 +98,5 @@ public class AtividadePrincipal extends AppCompatActivity {
         startActivityForResult(Activity2, 1);
         finish();
     }
-
-
 
 }

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,18 +24,16 @@ public class FrequenciaDAO {
         banco = new Banco(context);
     }
 
-    public ArrayList<String> getAllFrequencia(){
-        ArrayList<String> frequencias = new ArrayList<String>();
-        String query = "SELECT descricao FROM frequencias order by id asc;";
+    public ArrayList<Frequencia> getAllFrequencia(){
+        ArrayList<Frequencia> frequencias = new ArrayList<Frequencia>();
+        String query = "SELECT id, descricao FROM frequencias order by id asc;";
 
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
         if(c.moveToFirst()){
             do {
-                Frequencia frequencia = new Frequencia();
-                frequencia.setDescricao(c.getString(c.getColumnIndex("descricao")));
-
-                frequencias.add(frequencia.getDescricao());
+                frequencias.add( new Frequencia(c.getInt(c.getColumnIndex("id")),
+                        c.getString(c.getColumnIndex("descricao"))) );
             }while(c.moveToNext());
         }
         return frequencias;

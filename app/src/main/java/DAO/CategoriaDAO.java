@@ -18,8 +18,7 @@ public class CategoriaDAO {
         banco = new Banco(context);
     }
 
-    public String inserir(String tipo, String nome, Integer frequencia_id,
-                          Date data, Float valor){
+    public String inserir(String tipo, String nome, Integer frequencia_id, String data, Float valor){
         ContentValues valores;
         long resultado;
         db = banco.getWritableDatabase();
@@ -27,7 +26,7 @@ public class CategoriaDAO {
         valores.put("tipo",tipo);
         valores.put("nome",nome);
         valores.put("frequencia_id",frequencia_id);
-        valores.put("data_agendada",data.toString());
+        valores.put("data_agendada",data);
         valores.put("valor",valor);
         resultado = db.insert("categorias",null,valores);
         db.close();
