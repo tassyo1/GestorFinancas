@@ -1,6 +1,7 @@
 package com.example.tassyosantana.gestorfinancas;
 
 import android.app.DatePickerDialog;
+import android.app.Service;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,31 +19,37 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import DAO.CategoriaDAO;
 import DAO.FrequenciaDAO;
+import DAO.MovimentoDAO;
 import Model.Frequencia;
 
 
 public class SegundaAtividade extends AppCompatActivity
         implements View.OnFocusChangeListener, AdapterView.OnItemSelectedListener{
     private EditText dataCampo;
-    private SimpleDateFormat dateFormat;
-    private DatePickerDialog datePickerDialog;
     private EditText valorCampo;
+    private DatePickerDialog datePickerDialog;
+    private SimpleDateFormat dateFormat;
     private Spinner spinner;
     private RadioButton radioDespesa;
     private RadioButton radioReceita;
     private EditText campoNome;
     private Frequencia frequencia;
+    private ServicoBanco servicoBanco;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segunda_atividade);
 
+        startService(new Intent(getBaseContext(), ServicoBanco.class));
         findViewsById();
 
         //DropDown
@@ -62,13 +69,7 @@ public class SegundaAtividade extends AppCompatActivity
         spinner.setOnItemSelectedListener(this);
 
         //data
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        dataCampo.setInputType(InputType.TYPE_NULL);
         setDateTimeField();
-
-        //Campo valor
-        //Formatação do campo
-        //valorCampo.addTextChangedListener(new NumberTextWatcher(valorCampo,"###.###.###,##"));
 
 
     }
@@ -80,7 +81,7 @@ public class SegundaAtividade extends AppCompatActivity
     }
 
     //Salvar Categoria
-    public void salvar(View v){
+    public void salvar(View v) throws Exception{
         CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
         String tipo ="";
 
@@ -89,19 +90,47 @@ public class SegundaAtividade extends AppCompatActivity
         if (radioReceita.isChecked())
             tipo = "R";
 
-        String mensagem = categoriaDAO.inserir(tipo,campoNome.getText().toString().trim(),frequencia.getId(),
-                dataCampo.getText().toString().trim() ,Float.parseFloat(valorCampo.getText().toString()));
+        String mensagem = categoriaDAO.inserir(tipo, campoNome.getText().toString().trim(), frequencia.getId(),
+                dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
 
+        if (verificaData()){
+
+        }else{
+            // chamar o inserir do movimentoDAO
+            String nome_digitado = campoNome.getText().toString().trim();
+            servicoBanco.gerarMovimento(dataCampo.getText().toString(),
+                    Float.parseFloat(valorCampo.getText().toString()),
+                    servicoBanco.trazCategoria(nome_digitado).getId()); //criar metodo para atualizar saldo e buscar id da categoria
+        }
+
     }
 
+    public boolean verificaData() throws Exception{
+        Date data = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(data);
+
+        Date data_atual = cal.getTime(); //pega data atual
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+        Date data_widget = format.parse(dataCampo.getText().toString());
+
+        if (data_widget.after(data_atual))
+            return true;
+        else
+            return false;
+    }
+
+
     private void setDateTimeField(){
+         dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dataCampo.setInputType(InputType.TYPE_NULL);
         dataCampo.setOnFocusChangeListener(this);
 
         Calendar novoCalendario = Calendar.getInstance();
 
-        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+         datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar novaData = Calendar.getInstance();

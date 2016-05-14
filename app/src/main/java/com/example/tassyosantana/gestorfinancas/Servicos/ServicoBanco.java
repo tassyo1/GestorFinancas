@@ -5,19 +5,20 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import DAO.CategoriaDAO;
 import DAO.MovimentoDAO;
+import Model.Categoria;
 
 
 /**
  * Created by tassyosantana on 10/05/16.
  */
-public class ServicoBanco extends Service implements Runnable {
+public class ServicoBanco extends Service  {
     private MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+    private CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
 
     @Override
     public void onCreate() {
-        Thread thread = new Thread(this);
-        thread.start();
         Log.d("Serviço", "Serviço criado");
         super.onCreate();
     }
@@ -30,19 +31,16 @@ public class ServicoBanco extends Service implements Runnable {
     @Override
     public void onDestroy() {
         Log.d("Serviço", "Serviço destruido");
-        super.onDestroy();
+        //super.onDestroy();
     }
 
-    private void fazAlgo(){
-        Log.d("Serviço","Estou fazendo algo");
-    }
-    /*private void geraMovimento(){
+    public void gerarMovimento(String data_lancamento, Float saldo, Integer categoria_id){
 
-    }*/
-
-    @Override
-    public void run(){
-        fazAlgo();
-        stopSelf();
+        movimentoDAO.inserir(data_lancamento, saldo, categoria_id);
     }
+
+    public Categoria trazCategoria(String nome){
+        return categoriaDAO.buscaPorNome(nome);
+    }
+
 }

@@ -24,7 +24,7 @@ import DAO.MovimentoDAO;
 import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
 
 
-public class AtividadePrincipal extends AppCompatActivity {
+public class AtividadePrincipal extends AppCompatActivity implements OnItemClickListener{
     GridView grid;
     ArrayAdapter<String> adapter;
 
@@ -79,14 +79,7 @@ public class AtividadePrincipal extends AppCompatActivity {
             }
         };
         grid.setAdapter(adapter);
-
-        grid.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        grid.setOnItemClickListener(this);
 
     }
 
@@ -103,6 +96,12 @@ public class AtividadePrincipal extends AppCompatActivity {
         Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
         startActivityForResult(Activity2, 1);
         finish();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        Toast.makeText(getApplicationContext(),
+                ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
     }
 
 }
