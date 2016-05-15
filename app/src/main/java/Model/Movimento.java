@@ -6,14 +6,24 @@ import java.util.Date;
  * Created by tassyosantana on 08/05/16.
  */
 public class Movimento {
+    private int id;
     private String data_lancamento;
     private String nome_categoria;
     private Float saldo_atual;
     private Float valor;
+    private int categoria_id;
 
     public Movimento(){
-
+        this.saldo_atual = 0f;
     }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getData_lancamento(){
         return this.data_lancamento;
     }
@@ -42,4 +52,15 @@ public class Movimento {
         this.valor = valor;
     }
 
+    public int getCategoria_id() { return categoria_id;}
+    public void setCategoria_id(int categoria_id) { this.categoria_id = categoria_id;}
+
+    public Float atualizaSaldo(Float valorCategoria, String tipoCategoria){
+        if (tipoCategoria.equals("R"))
+            this.saldo_atual = this.saldo_atual + valorCategoria;
+        else
+            this.saldo_atual = this.saldo_atual - valorCategoria;
+
+        return this.saldo_atual;
+    }
 }

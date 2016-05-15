@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -29,6 +30,7 @@ import DAO.CategoriaDAO;
 import DAO.FrequenciaDAO;
 import DAO.MovimentoDAO;
 import Model.Frequencia;
+import Model.Movimento;
 
 
 public class SegundaAtividade extends AppCompatActivity
@@ -42,14 +44,14 @@ public class SegundaAtividade extends AppCompatActivity
     private RadioButton radioReceita;
     private EditText campoNome;
     private Frequencia frequencia;
-    private ServicoBanco servicoBanco;
+    private Movimento movimento_model;
+    private MovimentoDAO movimentoDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segunda_atividade);
 
-        startService(new Intent(getBaseContext(), ServicoBanco.class));
         findViewsById();
 
         //DropDown
@@ -81,7 +83,7 @@ public class SegundaAtividade extends AppCompatActivity
     }
 
     //Salvar Categoria
-    public void salvar(View v) throws Exception{
+    public void salvar(View v) {
         CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
         String tipo ="";
 
@@ -95,32 +97,9 @@ public class SegundaAtividade extends AppCompatActivity
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
 
-        if (verificaData()){
-
-        }else{
-            // chamar o inserir do movimentoDAO
-            String nome_digitado = campoNome.getText().toString().trim();
-            servicoBanco.gerarMovimento(dataCampo.getText().toString(),
-                    Float.parseFloat(valorCampo.getText().toString()),
-                    servicoBanco.trazCategoria(nome_digitado).getId()); //criar metodo para atualizar saldo e buscar id da categoria
-        }
 
     }
 
-    public boolean verificaData() throws Exception{
-        Date data = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(data);
-
-        Date data_atual = cal.getTime(); //pega data atual
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-        Date data_widget = format.parse(dataCampo.getText().toString());
-
-        if (data_widget.after(data_atual))
-            return true;
-        else
-            return false;
-    }
 
 
     private void setDateTimeField(){
@@ -167,7 +146,7 @@ public class SegundaAtividade extends AppCompatActivity
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
         frequencia = (Frequencia) parent.getSelectedItem();
 
-        Toast.makeText(this, "Frequencia ID: " + frequencia.getId() + ",  Frequencia : " + frequencia.getDescricao(), Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "Frequencia ID: " + frequencia.getId() + ",  Frequencia : " + frequencia.getDescricao(), Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent)

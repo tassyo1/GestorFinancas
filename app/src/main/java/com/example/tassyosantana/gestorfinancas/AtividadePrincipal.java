@@ -1,11 +1,16 @@
 package com.example.tassyosantana.gestorfinancas;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -18,25 +23,36 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
-import java.util.ArrayList;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import DAO.CategoriaDAO;
 import DAO.MovimentoDAO;
+import Model.Categoria;
+import Model.Movimento;
+
 import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
 
 
 public class AtividadePrincipal extends AppCompatActivity implements OnItemClickListener{
     GridView grid;
     ArrayAdapter<String> adapter;
-
+    ServicoBanco servicoBanco;
+    boolean mBound = false;
+    Categoria categoria;
+    CategoriaDAO categoriaDAO;
+    Movimento movimento_model;
+    MovimentoDAO movimentoDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
 
-        //iniciando o Serviço do Banco
-        startService(new Intent(this,ServicoBanco.class));
-
+        Log.d("Atividade", "Atividade Criada");
 
         ArrayList <String> a = new ArrayList<String>();
         MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
@@ -83,6 +99,58 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
 
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Intent intent = new Intent(this, ServicoBanco.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if(mBound){
+
+            if (verificaData()){
+
+            }else{
+                //até aqui está ok
+
+                movimento_model = movimentoDAO.buscaUltimoMovimento();
+                movimento_model.atualizaSaldo(categoria.getValor() , categoria.getTipo());
+
+            servicoBanco.gerarMovimento(categoria.getDataAgendada(),
+                   movimento_model.getSaldo_atual() ,
+                    categoria.getId());
+            }
+
+        }
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            ServicoBanco.LocalBinder binder = (ServicoBanco.LocalBinder) service;
+            servicoBanco = binder.getServerInstance();
+            mBound = true;
+            Toast.makeText(AtividadePrincipal.this, "Serviço Banco Ligado", Toast.LENGTH_SHORT).show();
+            Log.d("Serviço", "Serviço Banco Ligado");
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+            Toast.makeText(AtividadePrincipal.this, "Serviço Banco Desligado", Toast.LENGTH_SHORT).show();
+            Log.d("Serviço", "Serviço Banco Desligado");
+
+        }
+    };
+
 
     // DP para pixels
     public static int getPixelsFromDPs(Activity activity, int dps){
@@ -102,6 +170,29 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         Toast.makeText(getApplicationContext(),
                 ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
+    }
+
+    public boolean verificaData(){
+        try {
+            categoria = categoriaDAO.buscaUltimaCategoria();
+
+            Date data = new Date();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(data);
+
+            Date data_atual = cal.getTime(); //pega data atual
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+            Date data_widget = format.parse(categoria.getDataAgendada().toString());
+
+            if (data_widget.after(data_atual))
+                return true;
+            else
+                return false;
+        }catch (Exception e){
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        return false;
     }
 
 }

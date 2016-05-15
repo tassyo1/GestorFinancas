@@ -3,6 +3,7 @@ package com.example.tassyosantana.gestorfinancas.Servicos;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Binder;
 import android.util.Log;
 
 import DAO.CategoriaDAO;
@@ -17,16 +18,28 @@ public class ServicoBanco extends Service  {
     private MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
     private CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
 
+    public class LocalBinder extends Binder{
+        public ServicoBanco getServerInstance() {
+            return ServicoBanco.this;
+        }
+    }
+    IBinder mBinder = new LocalBinder();
+
+    public ServicoBanco(){
+
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
     @Override
     public void onCreate() {
         Log.d("Serviço", "Serviço criado");
         super.onCreate();
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
     @Override
     public void onDestroy() {

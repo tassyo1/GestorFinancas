@@ -61,7 +61,30 @@ public class MovimentoDAO  {
                 movimentos.add(movimento_model);
             }while(c.moveToNext());
         }
+        db.close();
         return movimentos;
+    }
+
+    public Movimento buscaUltimoMovimento(){
+        Movimento movimento_model = new Movimento();
+        String query =
+                "SELECT * FROM movimentos ORDER BY id DESC LIMIT 1";
+
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery(query,null);
+
+        if (c != null) {
+            c.moveToFirst();
+
+            movimento_model.setId(c.getInt(c.getColumnIndex("id")));
+            movimento_model.setData_lancamento(c.getString(c.getColumnIndex("data_lancamento")));
+            movimento_model.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual")));
+            movimento_model.setCategoria_id(c.getInt(c.getColumnIndex("categoria_id")));
+        }
+
+        db.close();
+
+        return movimento_model;
     }
 
 
