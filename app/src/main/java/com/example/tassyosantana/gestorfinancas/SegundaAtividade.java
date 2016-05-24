@@ -97,7 +97,6 @@ public class SegundaAtividade extends AppCompatActivity
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
 
-
     }
 
 

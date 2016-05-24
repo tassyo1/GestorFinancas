@@ -46,7 +46,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     CategoriaDAO categoriaDAO;
     Movimento movimento_model;
     MovimentoDAO movimentoDAO;
-
+    ArrayList<Categoria>arrayDeCategoria;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,48 +54,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
 
         Log.d("Atividade", "Atividade Criada");
 
-        ArrayList <String> a = new ArrayList<String>();
-        MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
-        if (movimentoDados.getAllMovimentos().size() > 0){
 
-            for (int i = 0; i < movimentoDados.getAllMovimentos().size(); i++){
-                a.add(movimentoDados.getAllMovimentos().get(i).getNome_categoria()+"\n"
-                +movimentoDados.getAllMovimentos().get(i).getData_lancamento());
-
-                a.add(movimentoDados.getAllMovimentos().get(i).getValor().toString());
-            }
-        TextView saldo = (TextView)findViewById(R.id.labelSaldoAtual);
-        saldo.setText(movimentoDados.getAllMovimentos().get(0).getSaldo_atual().toString());
-        }
-        grid = (GridView) findViewById(R.id.gridView);
-
-
-        adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, a){
-            public View getView(int position, View convertView, ViewGroup parent){
-                View view = super.getView(position, convertView, parent);
-                TextView tv = (TextView) view;
-                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,17);
-                tv.setGravity(Gravity.LEFT);
-
-
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                        AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT
-                );
-
-                tv.setLayoutParams(lp);
-
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tv.getLayoutParams();
-                tv.setBackgroundColor(Color.WHITE);
-                params.height = getPixelsFromDPs(AtividadePrincipal.this,50);
-                params.width = getPixelsFromDPs(AtividadePrincipal.this, 175);
-                tv.setLayoutParams(params);
-
-                return tv;
-            }
-        };
-        grid.setAdapter(adapter);
-        grid.setOnItemClickListener(this);
 
     }
 
@@ -104,20 +63,17 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         super.onStart();
         Intent intent = new Intent(this, ServicoBanco.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        if(mBound){
+        if(!mBound){
+            startService(new Intent(getBaseContext(), ServicoBanco.class));
+            mBound = true;
+            geraVariosMovimentos();
 
-            if (verificaData()){
+           // if (verificaData()){
 
-            }else{
+           // }else{
+
                 //até aqui está ok
 
-                movimento_model = movimentoDAO.buscaUltimoMovimento();
-                movimento_model.atualizaSaldo(categoria.getValor() , categoria.getTipo());
-
-            servicoBanco.gerarMovimento(categoria.getDataAgendada(),
-                   movimento_model.getSaldo_atual() ,
-                    categoria.getId());
-            }
 
         }
     }
@@ -193,6 +149,76 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         }
 
         return false;
+    }
+
+    public void geraVariosMovimentos(){
+        categoriaDAO = new CategoriaDAO(getBaseContext());
+        movimentoDAO = new MovimentoDAO(getBaseContext());
+        arrayDeCategoria = categoriaDAO.buscaCategoriasSemMovimento();
+
+        if (arrayDeCategoria.size() > 0) {
+            for (int i = 0; i < arrayDeCategoria.size(); i++) {
+
+                movimento_model = movimentoDAO.buscaUltimoMovimento();
+                movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                movimentoDAO.inserir(arrayDeCategoria.get(i).getDataAgendada(),
+                        movimento_model.getSaldo_atual(),
+                        arrayDeCategoria.get(i).getId());
+
+                /*servicoBanco.gerarMovimento(arrayDeCategoria.get(i).getDataAgendada(),
+                        movimento_model.getSaldo_atual(),
+                        arrayDeCategoria.get(i).getId());*/
+            }
+
+        }
+        preencheGrid();
+    }
+
+    public void preencheGrid(){
+        ArrayList <String> a = new ArrayList<String>();
+        MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
+        if (movimentoDados.buscaTodosMovimentos().size() > 0){
+
+            for (int i = 0; i < movimentoDados.buscaTodosMovimentos().size(); i++){
+                a.add(movimentoDados.buscaTodosMovimentos().get(i).getNome_categoria()+"\n"
+                        +movimentoDados.buscaTodosMovimentos().get(i).getData_lancamento());
+
+                a.add(movimentoDados.buscaTodosMovimentos().get(i).getValor().toString());
+            }
+            TextView saldo = (TextView)findViewById(R.id.labelSaldoAtual);
+           // saldo.setText(movimentoDados.buscaTodosMovimentos().get(0).getSaldo_atual().toString());
+            saldo.setText(movimentoDados.buscaUltimoMovimento().getSaldo_atual().toString());
+        }
+        grid = (GridView) findViewById(R.id.gridView);
+
+
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, a){
+            public View getView(int position, View convertView, ViewGroup parent){
+                View view = super.getView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,17);
+                tv.setGravity(Gravity.LEFT);
+
+
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.MATCH_PARENT
+                );
+
+                tv.setLayoutParams(lp);
+
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tv.getLayoutParams();
+                tv.setBackgroundColor(Color.WHITE);
+                params.height = getPixelsFromDPs(AtividadePrincipal.this,50);
+                params.width = getPixelsFromDPs(AtividadePrincipal.this, 175);
+                tv.setLayoutParams(params);
+
+                return tv;
+            }
+        };
+        grid.setAdapter(adapter);
+        grid.setOnItemClickListener(this);
     }
 
 }

@@ -41,7 +41,7 @@ public class MovimentoDAO  {
         return "Registro inserido com sucesso";
     }
 
-    public ArrayList<Movimento> getAllMovimentos(){
+    public ArrayList<Movimento> buscaTodosMovimentos(){
         ArrayList<Movimento> movimentos = new ArrayList<Movimento>();
         String query =
                 "SELECT categorias.nome, categorias.valor, data_lancamento, saldo_atual FROM movimentos "
@@ -73,7 +73,7 @@ public class MovimentoDAO  {
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
 
-        if (c != null) {
+        if (c != null && c.getCount()>0) {
             c.moveToFirst();
 
             movimento_model.setId(c.getInt(c.getColumnIndex("id")));

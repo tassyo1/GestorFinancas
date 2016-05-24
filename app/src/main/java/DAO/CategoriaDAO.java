@@ -81,12 +81,34 @@ public class CategoriaDAO {
         return categoria_model;
 
     }
-    /*
-    public ArrayList<Categoria> buscaCategoriasSemMovimento(){
-        query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where categoria_id is null
-        and DATE(substr(data_agendada,7,4) ||'-' ||substr(data_agendada,4,2) ||'-' ||substr(data_agendada,1,2))
-        <= date('now');
 
-        ";
-    }*/
+    //busca as categorias sem movimentos e com a data igual ou inferior a hoje
+    public ArrayList<Categoria> buscaCategoriasSemMovimento() {
+
+        String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where categoria_id is null "+
+        "and DATE (substr(data_agendada, 7, 4) || '-' || substr(data_agendada, 4, 2) || '-' || substr(data_agendada, 1, 2)) "+
+                "<= date('now');";
+
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery(query,null);
+
+        ArrayList<Categoria> array = new ArrayList<Categoria>();
+
+        if (c.moveToFirst()){
+            do {
+                Categoria categoria = new Categoria();
+                categoria.setId(c.getInt(c.getColumnIndex("id")));
+                categoria.setNome(c.getString(c.getColumnIndex("nome")));
+                categoria.setDataAgendada(c.getString(c.getColumnIndex("data_agendada")));
+                categoria.setFrequencia_id(c.getInt(c.getColumnIndex("frequencia_id")));
+                categoria.setTipo(c.getString(c.getColumnIndex("tipo")));
+                categoria.setValor(c.getFloat(c.getColumnIndex("valor")));
+
+                array.add(categoria);
+            }while(c.moveToNext());
+        }
+        db.close();
+
+        return array;
+    }
 }
