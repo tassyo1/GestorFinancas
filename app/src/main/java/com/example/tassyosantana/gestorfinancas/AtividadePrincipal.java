@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,9 +44,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     ServicoBanco servicoBanco;
     boolean mBound = false;
     Categoria categoria;
-    CategoriaDAO categoriaDAO;
     Movimento movimento_model;
-    MovimentoDAO movimentoDAO;
     ArrayList<Categoria>arrayDeCategoria;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +52,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         setContentView(R.layout.activity_atividade_principal);
 
         Log.d("Atividade", "Atividade Criada");
-
-
-
     }
 
     @Override
@@ -66,15 +62,16 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         if(!mBound){
             startService(new Intent(getBaseContext(), ServicoBanco.class));
             mBound = true;
+
             geraVariosMovimentos();
+            geraMovimentosFrequentes();
+            preencheGrid();
 
            // if (verificaData()){
 
            // }else{
 
                 //até aqui está ok
-
-
         }
     }
     @Override
@@ -130,6 +127,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
 
     public boolean verificaData(){
         try {
+            CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
             categoria = categoriaDAO.buscaUltimaCategoria();
 
             Date data = new Date();
@@ -151,14 +149,98 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         return false;
     }
 
+    public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array){
+        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+        Movimento movimento_geral;
+        for (int i = 0; i < array.size(); i++){
+            movimento_geral = movimentoDAO.buscaMovimentosPorCategoriaHoje(array.get(i).getId());
+            if (array.get(i).getId() == movimento_geral.getCategoria_id()){
+                array.remove(i);
+            }
+        }
+
+        return array;
+    }
+    public void geraMovimentosFrequentes(){
+        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+        arrayDeCategoria = removeCategoriaQueGerouMovimento(categoriaDAO.buscaCategoriasFrequentes());
+
+        Date agora = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        if (arrayDeCategoria.size() > 0) {
+            for (int i = 0; i < arrayDeCategoria.size(); i++) {
+                Integer mes = Integer.parseInt(arrayDeCategoria.get(i).getDataAgendada().substring(3,5));
+                // se for dezembro o próximo será janeiro
+                mes =(mes + 1 == 13)?1:mes;
+
+                //mensal
+                if(arrayDeCategoria.get(i).getFrequencia_id().toString().equals("2") &&
+                        ( mes + 1 == Integer.parseInt(dateFormat.format(agora).toString().substring(3,5)))){
+
+                    movimento_model = movimentoDAO.buscaUltimoMovimento();
+                    movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                    movimentoDAO.inserir(dateFormat.format(agora).toString(),
+                            movimento_model.getSaldo_atual(),
+                            arrayDeCategoria.get(i).getId());
+
+
+                  //bimestral
+                }else if(arrayDeCategoria.get(i).getFrequencia_id().toString().equals("3") &&
+                        (mes + 2 == Integer.parseInt(dateFormat.format(agora).toString().substring(3,5))) ){
+                    movimento_model = movimentoDAO.buscaUltimoMovimento();
+                    movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                    movimentoDAO.inserir(dateFormat.format(agora).toString(),
+                            movimento_model.getSaldo_atual(),
+                            arrayDeCategoria.get(i).getId());
+
+                  //trimestral
+                }else if(arrayDeCategoria.get(i).getFrequencia_id().toString().equals("4") &&
+                        (mes + 3 == Integer.parseInt(dateFormat.format(agora).toString().substring(3,5))) ){
+                    movimento_model = movimentoDAO.buscaUltimoMovimento();
+                    movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                    movimentoDAO.inserir(dateFormat.format(agora).toString(),
+                            movimento_model.getSaldo_atual(),
+                            arrayDeCategoria.get(i).getId());
+
+                  //semestral
+                }else if (arrayDeCategoria.get(i).getFrequencia_id().toString().equals("5") &&
+                        (mes + 6 == Integer.parseInt(dateFormat.format(agora).toString().substring(3,5))) ){
+                    movimento_model = movimentoDAO.buscaUltimoMovimento();
+                    movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                    movimentoDAO.inserir(dateFormat.format(agora).toString(),
+                            movimento_model.getSaldo_atual(),
+                            arrayDeCategoria.get(i).getId());
+
+
+                    //anual
+                }else if (arrayDeCategoria.get(i).getFrequencia_id().toString().equals("6") &&
+                        (mes == Integer.parseInt(dateFormat.format(agora).toString().substring(3,5))) ){
+                    movimento_model = movimentoDAO.buscaUltimoMovimento();
+                    movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
+
+                    movimentoDAO.inserir(dateFormat.format(agora).toString(),
+                            movimento_model.getSaldo_atual(),
+                            arrayDeCategoria.get(i).getId());
+                }
+            }
+        }
+
+    }
     public void geraVariosMovimentos(){
-        categoriaDAO = new CategoriaDAO(getBaseContext());
-        movimentoDAO = new MovimentoDAO(getBaseContext());
-        arrayDeCategoria = categoriaDAO.buscaCategoriasSemMovimento();
+        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+        arrayDeCategoria = categoriaDAO.buscaCategoriasAnteriores();
 
         if (arrayDeCategoria.size() > 0) {
             for (int i = 0; i < arrayDeCategoria.size(); i++) {
 
+                //para pegar o saldo mais recente
                 movimento_model = movimentoDAO.buscaUltimoMovimento();
                 movimento_model.atualizaSaldo(arrayDeCategoria.get(i).getValor(), arrayDeCategoria.get(i).getTipo());
 
@@ -166,33 +248,32 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
                         movimento_model.getSaldo_atual(),
                         arrayDeCategoria.get(i).getId());
 
-                /*servicoBanco.gerarMovimento(arrayDeCategoria.get(i).getDataAgendada(),
-                        movimento_model.getSaldo_atual(),
-                        arrayDeCategoria.get(i).getId());*/
             }
 
         }
-        preencheGrid();
+
     }
 
     public void preencheGrid(){
         ArrayList <String> a = new ArrayList<String>();
         MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
-        if (movimentoDados.buscaTodosMovimentos().size() > 0){
+        if (movimentoDados.buscaTodosMovimentos().size() > 0) {
 
-            for (int i = 0; i < movimentoDados.buscaTodosMovimentos().size(); i++){
-                a.add(movimentoDados.buscaTodosMovimentos().get(i).getNome_categoria()+"\n"
-                        +movimentoDados.buscaTodosMovimentos().get(i).getData_lancamento());
+            for (int i = 0; i < movimentoDados.buscaTodosMovimentos().size(); i++) {
+                a.add(movimentoDados.buscaTodosMovimentos().get(i).getNome_categoria() + "\n"
+                        + movimentoDados.buscaTodosMovimentos().get(i).getData_lancamento());
 
                 a.add(movimentoDados.buscaTodosMovimentos().get(i).getValor().toString());
             }
-            TextView saldo = (TextView)findViewById(R.id.labelSaldoAtual);
-           // saldo.setText(movimentoDados.buscaTodosMovimentos().get(0).getSaldo_atual().toString());
+            TextView saldo = (TextView) findViewById(R.id.labelSaldoAtual);
             saldo.setText(movimentoDados.buscaUltimoMovimento().getSaldo_atual().toString());
+            // saldo.setText(movimentoDados.buscaTodosMovimentos().get(0).getSaldo_atual().toString());
+
         }
         grid = (GridView) findViewById(R.id.gridView);
 
 
+        //parte do layout do grid
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, a){
             public View getView(int position, View convertView, ViewGroup parent){

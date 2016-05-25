@@ -96,11 +96,7 @@ public class SegundaAtividade extends AppCompatActivity
                 dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
-
     }
-
-
-
     private void setDateTimeField(){
          dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         dataCampo.setInputType(InputType.TYPE_NULL);

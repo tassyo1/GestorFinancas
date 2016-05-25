@@ -87,6 +87,32 @@ public class MovimentoDAO  {
         return movimento_model;
     }
 
+    public Movimento buscaMovimentosPorCategoriaHoje(int categoria_id){
+        Movimento movimento = new Movimento();
+        String query = "select * from movimentos where categoria_id ="+categoria_id+
+                        " and DATE (substr(data_lancamento, 7, 4) || '-' || " +
+                        "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) " +
+                        " =  date('now');  ";
+
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery(query,null);
 
 
+
+        if (c != null && c.getCount()>0) {
+            c.moveToFirst();
+
+            movimento.setId(c.getInt(c.getColumnIndex("id")));
+            movimento.setData_lancamento(c.getString(c.getColumnIndex("data_lancamento")));
+            movimento.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual")));
+            movimento.setCategoria_id(c.getInt(c.getColumnIndex("categoria_id")));
+        }
+        db.close();
+
+        return movimento;
+    }
+
+
+    /* "and DATE (substr(data_lancamento, 7, 4) || '-' || substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) "+
+                "= date('now');"; */
 }

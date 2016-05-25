@@ -9,7 +9,7 @@ public class Categoria {
     private float valor;
     private String dataAgendada;
     private String tipo;
-    private int frequencia_id;
+    private Integer frequencia_id;
 
     public Categoria(){
 
@@ -55,11 +55,11 @@ public class Categoria {
         this.tipo = tipo;
     }
 
-    public int getFrequencia_id() {
+    public Integer getFrequencia_id() {
         return frequencia_id;
     }
 
-    public void setFrequencia_id(int frequencia_id) {
+    public void setFrequencia_id(Integer frequencia_id) {
         this.frequencia_id = frequencia_id;
     }
 }
