@@ -41,11 +41,14 @@ public class MovimentoDAO  {
         return "Registro inserido com sucesso";
     }
 
+    //usado para preencher o grid
     public ArrayList<Movimento> buscaTodosMovimentos(){
         ArrayList<Movimento> movimentos = new ArrayList<Movimento>();
         String query =
-                "SELECT categorias.nome, categorias.valor, data_lancamento, saldo_atual FROM movimentos "
-                +"INNER JOIN categorias ON categorias.id = movimentos.categoria_id ORDER BY movimentos.data_lancamento desc";
+                "SELECT categorias.nome, categorias.valor, data_lancamento, saldo_atual, categorias.tipo FROM movimentos "
+                +"INNER JOIN categorias ON categorias.id = movimentos.categoria_id ORDER BY " +
+                        "date (substr(data_lancamento, 7, 4) || '-' ||"+
+                "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) desc";
 
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
@@ -57,6 +60,7 @@ public class MovimentoDAO  {
                 movimento_model.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual")));
                 movimento_model.setNome_categoria(c.getString(c.getColumnIndex("nome")));
                 movimento_model.setValor(c.getFloat(c.getColumnIndex("valor")));
+                movimento_model.setTipo(c.getString(c.getColumnIndex("tipo")));
 
                 movimentos.add(movimento_model);
             }while(c.moveToNext());
@@ -112,7 +116,4 @@ public class MovimentoDAO  {
         return movimento;
     }
 
-
-    /* "and DATE (substr(data_lancamento, 7, 4) || '-' || substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) "+
-                "= date('now');"; */
 }

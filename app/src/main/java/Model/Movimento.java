@@ -12,6 +12,7 @@ public class Movimento {
     private Float saldo_atual;
     private Float valor;
     private int categoria_id;
+    private String tipo;
 
     public Movimento(){
         this.saldo_atual = 0f;
@@ -54,6 +55,14 @@ public class Movimento {
 
     public int getCategoria_id() { return categoria_id;}
     public void setCategoria_id(int categoria_id) { this.categoria_id = categoria_id;}
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
 
     public Float atualizaSaldo(Float valorCategoria, String tipoCategoria){
         if (tipoCategoria.equals("R"))

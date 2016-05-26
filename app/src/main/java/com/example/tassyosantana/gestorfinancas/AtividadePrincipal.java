@@ -1,14 +1,9 @@
 package com.example.tassyosantana.gestorfinancas;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.os.IBinder;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,13 +30,10 @@ import DAO.MovimentoDAO;
 import Model.Categoria;
 import Model.Movimento;
 
-import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
-
 
 public class AtividadePrincipal extends AppCompatActivity implements OnItemClickListener{
     GridView grid;
     ArrayAdapter<String> adapter;
-    ServicoBanco servicoBanco;
     boolean mBound = false;
     Categoria categoria;
     Movimento movimento_model;
@@ -55,55 +47,19 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, ServicoBanco.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-        if(!mBound){
-            startService(new Intent(getBaseContext(), ServicoBanco.class));
-            mBound = true;
 
-            geraVariosMovimentos();
-            geraMovimentosFrequentes();
-            preencheGrid();
+        geraVariosMovimentos();
+        geraMovimentosFrequentes();
+        preencheGrid();
 
-           // if (verificaData()){
-
-           // }else{
-
-                //até aqui está ok
-        }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
     }
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            ServicoBanco.LocalBinder binder = (ServicoBanco.LocalBinder) service;
-            servicoBanco = binder.getServerInstance();
-            mBound = true;
-            Toast.makeText(AtividadePrincipal.this, "Serviço Banco Ligado", Toast.LENGTH_SHORT).show();
-            Log.d("Serviço", "Serviço Banco Ligado");
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-            Toast.makeText(AtividadePrincipal.this, "Serviço Banco Desligado", Toast.LENGTH_SHORT).show();
-            Log.d("Serviço", "Serviço Banco Desligado");
-
-        }
-    };
-
 
     // DP para pixels
     public static int getPixelsFromDPs(Activity activity, int dps){
@@ -263,7 +219,12 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
                 a.add(movimentoDados.buscaTodosMovimentos().get(i).getNome_categoria() + "\n"
                         + movimentoDados.buscaTodosMovimentos().get(i).getData_lancamento());
 
-                a.add(movimentoDados.buscaTodosMovimentos().get(i).getValor().toString());
+                //preenchendo valor no adapter do grid
+                if (movimentoDados.buscaTodosMovimentos().get(i).getTipo().equals("D")) {
+                    a.add("-"+movimentoDados.buscaTodosMovimentos().get(i).getValor().toString());
+                }else {
+                    a.add("+"+movimentoDados.buscaTodosMovimentos().get(i).getValor().toString());
+                }
             }
             TextView saldo = (TextView) findViewById(R.id.labelSaldoAtual);
             saldo.setText(movimentoDados.buscaUltimoMovimento().getSaldo_atual().toString());

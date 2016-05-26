@@ -1,12 +1,10 @@
 package com.example.tassyosantana.gestorfinancas;
 
 import android.app.DatePickerDialog;
-import android.app.Service;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -20,11 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tassyosantana.gestorfinancas.Servicos.ServicoBanco;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import DAO.CategoriaDAO;
 import DAO.FrequenciaDAO;
