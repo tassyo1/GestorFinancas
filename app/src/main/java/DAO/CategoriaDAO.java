@@ -83,11 +83,11 @@ public class CategoriaDAO {
     }
 
     //busca as categorias sem movimentos e com a data igual ou inferior a hoje
-    public ArrayList<Categoria> buscaCategoriasAnteriores() {
+    public ArrayList<Categoria> buscaCategoriasEventuais() {
 
         String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where categoria_id is null "+
         "and DATE (substr(data_agendada, 7, 4) || '-' || substr(data_agendada, 4, 2) || '-' || substr(data_agendada, 1, 2)) "+
-                "<= date('now');";
+                "<= date('now') and frequencia_id = 1;";
 
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
@@ -114,8 +114,8 @@ public class CategoriaDAO {
 
     public ArrayList<Categoria> buscaCategoriasFrequentes(){
         String query = "select categorias.* from categorias where frequencia_id <> 1 "+
-                "and substr(data_agendada, 1, 2)" +
-                "= substr(date('now'),9,2);";
+                "and DATE (substr(data_agendada, 7, 4) || '-' || substr(data_agendada, 4, 2) || '-' || substr(data_agendada, 1, 2)) " +
+                "<= date('now');";
 
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
