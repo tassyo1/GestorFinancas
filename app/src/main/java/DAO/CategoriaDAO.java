@@ -41,6 +41,50 @@ public class CategoriaDAO {
         return "Registro inserido com sucesso";
     }
 
+    public String atualizar(Integer id, String tipo, String nome, Integer frequencia_id, String data, Float valor ){
+        ContentValues valores;
+        long resultado;
+        db =banco.getWritableDatabase();
+        valores = new ContentValues();
+        valores.put("tipo",tipo);
+        valores.put("nome",nome);
+        valores.put("frequencia_id",frequencia_id);
+        valores.put("data_agendada",data);
+        valores.put("valor",valor);
+        resultado = db.update("categorias", valores, "where id = " + id, null);
+        db.close();
+
+        if (resultado == -1)
+            return "Erro ao atualizar registro";
+
+        return "Registro atualizado com sucesso";
+    }
+
+    public String deletar(Integer id){
+        long resultado;
+        db =banco.getWritableDatabase();
+        resultado = db.delete("categorias", "where id= " + id, null);
+        db.close();
+
+        if (resultado == -1)
+            return "Erro ao deletar registro";
+
+        return "Registro deletado com sucesso";
+    }
+
+    public boolean temMovimento(Integer id){
+        boolean tem;
+        String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where " +
+                "categorias.id = "+id +" categoria_id is null ";
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery(query,null);
+        if (c != null)
+            tem = true;
+        else
+            tem = false;
+
+        return tem;
+    }
     public Categoria buscaPorNome(String nome){
         String query =
                 "SELECT * FROM categorias where nome like '%"+nome+"%'";
