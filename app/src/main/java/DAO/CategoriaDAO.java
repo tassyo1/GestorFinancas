@@ -85,6 +85,34 @@ public class CategoriaDAO {
 
         return tem;
     }
+
+    public ArrayList<Categoria> listaTodasCategorias() {
+
+        String query = "select * from categorias order by nome";
+
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery(query,null);
+
+        ArrayList<Categoria> array = new ArrayList<Categoria>();
+
+        if (c.moveToFirst()){
+            do {
+                Categoria categoria = new Categoria();
+                categoria.setId(c.getInt(c.getColumnIndex("id")));
+                categoria.setNome(c.getString(c.getColumnIndex("nome")));
+                categoria.setDataAgendada(c.getString(c.getColumnIndex("data_agendada")));
+                categoria.setFrequencia_id(c.getInt(c.getColumnIndex("frequencia_id")));
+                categoria.setTipo(c.getString(c.getColumnIndex("tipo")));
+                categoria.setValor(c.getFloat(c.getColumnIndex("valor")));
+
+                array.add(categoria);
+            }while(c.moveToNext());
+        }
+        db.close();
+
+        return array;
+    }
+
     public Categoria buscaPorNome(String nome){
         String query =
                 "SELECT * FROM categorias where nome like '%"+nome+"%'";
@@ -125,7 +153,6 @@ public class CategoriaDAO {
         return categoria_model;
 
     }
-
     //busca as categorias sem movimentos e com a data igual ou inferior a hoje
     public ArrayList<Categoria> buscaCategoriasEventuais() {
 
