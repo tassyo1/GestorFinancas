@@ -43,9 +43,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
-
-
-        Log.d("Atividade", "Atividade Criada");
     }
 
     @Override
@@ -65,17 +62,15 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         super.onStop();
     }
 
-    // DP para pixels
-    public static int getPixelsFromDPs(Activity activity, int dps){
-        Resources r = activity.getResources();
-        int  px = (int) (TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
-        return px;
-    }
 
     public void proximaTela(View view){
         Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
         startActivityForResult(Activity2, 1);
+        finish();
+    }
+    public void TelaLista(View view){
+        Intent Activity3 = new Intent(AtividadePrincipal.this, TerceiraAtividade.class);
+        startActivityForResult(Activity3, 1);
         finish();
     }
 
@@ -275,7 +270,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         }
         grid = (GridView) findViewById(R.id.gridView);
 
-
         //parte do layout do grid
         adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, a){
@@ -302,5 +296,13 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         };
         grid.setAdapter(adapter);
         grid.setOnItemClickListener(this);
+    }
+
+    // DP para pixels
+    public static int getPixelsFromDPs(Activity activity, int dps){
+        Resources r = activity.getResources();
+        int  px = (int) (TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
+        return px;
     }
 }

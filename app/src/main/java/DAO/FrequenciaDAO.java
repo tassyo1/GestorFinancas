@@ -39,4 +39,18 @@ public class FrequenciaDAO {
         return frequencias;
     }
 
+    public String buscaFrequenciaPorId(Integer id){
+        String descricao ="";
+
+        db = banco.getReadableDatabase();
+        Cursor c = db.rawQuery("select descricao from frequencias where id ="+id, null);
+
+        if(c.moveToFirst()){
+            do{
+                descricao = c.getString(c.getColumnIndex("descricao"));
+            }while (c.moveToNext());
+        }
+        return descricao;
+    }
+
 }

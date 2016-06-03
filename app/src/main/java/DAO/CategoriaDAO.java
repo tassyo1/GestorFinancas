@@ -32,7 +32,7 @@ public class CategoriaDAO {
         valores.put("frequencia_id",frequencia_id);
         valores.put("data_agendada",data);
         valores.put("valor",valor);
-        resultado = db.insert("categorias",null,valores);
+        resultado = db.insert("categorias", null, valores);
         db.close();
 
         if (resultado == -1)
@@ -63,7 +63,7 @@ public class CategoriaDAO {
     public String deletar(Integer id){
         long resultado;
         db =banco.getWritableDatabase();
-        resultado = db.delete("categorias", "where id= " + id, null);
+        resultado = db.delete("categorias", "id=" + id, null);
         db.close();
 
         if (resultado == -1)
@@ -74,14 +74,23 @@ public class CategoriaDAO {
 
     public boolean temMovimento(Integer id){
         boolean tem;
-        String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where " +
-                "categorias.id = "+id +" categoria_id is null ";
+        String query = "select categorias.* from categorias inner join movimentos on categorias.id = categoria_id where " +
+                "categorias.id = "+id +"  limit 1 ";
+
+        String descricao ="";
+
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
-        if (c != null)
-            tem = true;
-        else
+
+        if (c.moveToFirst())
+            descricao = c.getString(c.getColumnIndex("nome"));
+
+        db.close();
+
+        if (descricao.equals(""))
             tem = false;
+        else
+            tem = true;
 
         return tem;
     }
@@ -119,16 +128,20 @@ public class CategoriaDAO {
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
 
-        if (c != null)
-            c.moveToFirst();
-
         Categoria categoria_model = new Categoria();
-        categoria_model.setId(c.getInt(c.getColumnIndex("id")));
-        categoria_model.setNome(c.getString(c.getColumnIndex("nome")));
-        categoria_model.setDataAgendada(c.getString(c.getColumnIndex("data_agendada")));
-        categoria_model.setFrequencia_id(c.getInt(c.getColumnIndex("frequencia_id")));
-        categoria_model.setTipo(c.getString(c.getColumnIndex("tipo")));
-        categoria_model.setValor(c.getFloat(c.getColumnIndex("valor")));
+        if (c.moveToFirst()) {
+
+            do {
+                categoria_model.setId(c.getInt(c.getColumnIndex("id")));
+                categoria_model.setNome(c.getString(c.getColumnIndex("nome")));
+                categoria_model.setDataAgendada(c.getString(c.getColumnIndex("data_agendada")));
+                categoria_model.setFrequencia_id(c.getInt(c.getColumnIndex("frequencia_id")));
+                categoria_model.setTipo(c.getString(c.getColumnIndex("tipo")));
+                categoria_model.setValor(c.getFloat(c.getColumnIndex("valor")));
+            }
+            while (c.moveToNext()) ;
+        }
+        db.close();
 
         return categoria_model;
     }
@@ -150,6 +163,7 @@ public class CategoriaDAO {
         categoria_model.setTipo(c.getString(c.getColumnIndex("tipo")));
         categoria_model.setValor(c.getFloat(c.getColumnIndex("valor")));
 
+        db.close();
         return categoria_model;
 
     }
