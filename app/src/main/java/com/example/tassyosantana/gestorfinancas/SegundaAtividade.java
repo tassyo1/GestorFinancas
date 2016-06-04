@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import DAO.CategoriaDAO;
@@ -48,7 +49,17 @@ public class SegundaAtividade extends AppCompatActivity
         setContentView(R.layout.activity_segunda_atividade);
 
         findViewsById();
+        PreencherSpinner();
 
+        Bundle extras = getIntent().getExtras();
+
+        if (extras!=null) {
+            ArrayList<String> prop = extras.getStringArrayList("categoria");
+            preencheControlesAteracao(prop);
+        }
+    }
+
+    public void PreencherSpinner(){
         //DropDown
         FrequenciaDAO frequenciaDados = new FrequenciaDAO(getBaseContext());
         ArrayAdapter<Frequencia> adapter = new ArrayAdapter<Frequencia>(this,android.R.layout.simple_spinner_item,frequenciaDados.getAllFrequencia()){
@@ -67,8 +78,6 @@ public class SegundaAtividade extends AppCompatActivity
 
         //data
         setDateTimeField();
-
-
     }
     public void telaAnterior(View view){
 
@@ -123,6 +132,29 @@ public class SegundaAtividade extends AppCompatActivity
         radioReceita = (RadioButton) findViewById(R.id.radioReceita);
 
         campoNome = (EditText) findViewById(R.id.textNome);
+    }
+
+    public void preencheControlesAteracao(ArrayList<String> prop){
+        campoNome.setText(prop.get(1));
+        valorCampo.setText(prop.get(2));
+        dataCampo.setText(prop.get(3));
+        if (prop.get(4).equals("D"))
+            radioDespesa.setChecked(true);
+        else
+            radioReceita.setChecked(true);
+
+        if(prop.get(5).equals("1"))
+            spinner.setSelection(0);
+        else if (prop.get(5).equals("2"))
+            spinner.setSelection(1);
+        else if (prop.get(5).equals("3"))
+            spinner.setSelection(2);
+        else if (prop.get(5).equals("4"))
+            spinner.setSelection(3);
+        else if (prop.get(5).equals("5"))
+            spinner.setSelection(4);
+        else if (prop.get(5).equals("6"))
+            spinner.setSelection(5);
     }
 
     @Override

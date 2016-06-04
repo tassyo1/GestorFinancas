@@ -62,7 +62,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         super.onStop();
     }
 
-
     public void proximaTela(View view){
         Intent Activity2 = new Intent(AtividadePrincipal.this, SegundaAtividade.class);
         startActivityForResult(Activity2, 1);
@@ -74,11 +73,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         finish();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        Toast.makeText(getApplicationContext(),
-                ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
-    }
 
     public boolean verificaData(){
         try {
@@ -304,5 +298,11 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         int  px = (int) (TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, dps, r.getDisplayMetrics()));
         return px;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+        Toast.makeText(getApplicationContext(),
+                ((TextView) v).getText(), Toast.LENGTH_SHORT).show();
     }
 }

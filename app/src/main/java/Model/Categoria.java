@@ -4,9 +4,9 @@ package Model;
  * Created by tassyosantana on 13/05/16.
  */
 public class Categoria {
-    private int id;
+    private Integer id;
     private String nome;
-    private float valor;
+    private Float valor;
     private String dataAgendada;
     private String tipo;
     private Integer frequencia_id;
@@ -15,11 +15,11 @@ public class Categoria {
 
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -31,11 +31,11 @@ public class Categoria {
         this.nome = nome;
     }
 
-    public float getValor() {
+    public Float getValor() {
         return valor;
     }
 
-    public void setValor(float valor) {
+    public void setValor(Float valor) {
         this.valor = valor;
     }
 

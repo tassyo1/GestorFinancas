@@ -26,6 +26,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import DAO.CategoriaDAO;
 import DAO.FrequenciaDAO;
@@ -71,11 +72,16 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         if(((TextView) v).getText().equals("Editar")){
-            Toast.makeText(getApplicationContext(), "EDITAR"+position, Toast.LENGTH_SHORT).show();
+            GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
+            TextView tv = (TextView) gv.getChildAt(position - 1);
+            String texto = tv.getText().toString().trim();
+            EditarClick(texto);
+
         }else if(((TextView) v).getText().equals("Excluir")){
             GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
             TextView tv = (TextView) gv.getChildAt(position - 2);
-            ExcluirClick(tv.getText().toString().trim());
+            String texto = tv.getText().toString().trim();
+            ExcluirClick(texto);
         }else{
             CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
             Categoria categoria = categoriaDAO.buscaPorNome(((TextView) v).getText().toString().trim());
@@ -105,7 +111,32 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
 
         if (categoriaDAO.temMovimento(categoria.getId()))
             Toast.makeText(getApplicationContext(), "Não foi possível excluir! \nCategoria já possui movimento", Toast.LENGTH_SHORT).show();
-        else
+        else {
+            preencherLista();
             Toast.makeText(getApplicationContext(), categoriaDAO.deletar(categoria.getId()), Toast.LENGTH_SHORT).show() ;
+
+        }
+    }
+
+    public void EditarClick(String descricao_categoria){
+        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+        Categoria categoria = categoriaDAO.buscaPorNome(descricao_categoria.trim());
+        ArrayList <String> prop = new ArrayList<String>();
+
+        prop.add(0,categoria.getId().toString());
+        prop.add(1,categoria.getNome());
+        prop.add(2, categoria.getValor().toString());
+        prop.add(3,categoria.getDataAgendada());
+        prop.add(4,categoria.getTipo());
+        prop.add(5,categoria.getFrequencia_id().toString());
+
+        Intent intent = new Intent(this, SegundaAtividade.class);
+        Bundle b = new Bundle();
+        b.putStringArrayList("categoria",prop);
+        intent.putExtras(b);
+        startActivity( intent);
+        finish();
+
+
     }
 }
