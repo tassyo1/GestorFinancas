@@ -51,7 +51,7 @@ public class CategoriaDAO {
         valores.put("frequencia_id",frequencia_id);
         valores.put("data_agendada",data);
         valores.put("valor",valor);
-        resultado = db.update("categorias", valores, "where id = " + id, null);
+        resultado = db.update("categorias", valores, "id =" + id, null);
         db.close();
 
         if (resultado == -1)

@@ -71,17 +71,14 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        if(((TextView) v).getText().equals("Editar")){
+        if(((TextView) v).getText().equals("Editar")) {
             GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
-            TextView tv = (TextView) gv.getChildAt(position - 1);
-            String texto = tv.getText().toString().trim();
-            EditarClick(texto);
-
+            TextView tv = (TextView) gv.getAdapter().getView(position - 1, null, gv);
+            EditarClick(tv.getText().toString().trim());
         }else if(((TextView) v).getText().equals("Excluir")){
             GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
-            TextView tv = (TextView) gv.getChildAt(position - 2);
-            String texto = tv.getText().toString().trim();
-            ExcluirClick(texto);
+            TextView tv = (TextView) gv.getAdapter().getView(position - 2, null, gv);
+            ExcluirClick(tv.getText().toString().trim());
         }else{
             CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
             Categoria categoria = categoriaDAO.buscaPorNome(((TextView) v).getText().toString().trim());
@@ -96,11 +93,11 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
             String descricao = frequenciaDAO.buscaFrequenciaPorId(categoria.getFrequencia_id());
 
             //Ver as informações da categoria ao clicar na célula
-            Toast.makeText(getApplicationContext(), categoria.getNome()+"\n"+
+            Toast.makeText(getApplicationContext(), "categoria: "+categoria.getNome()+"\n"+
                                                     "valor: R$"+categoria.getValor()+"\n"+
                                                     "data: "+categoria.getDataAgendada()+"\n"+
                                                     "tipo: "+tipo+"\n"+
-                                                    "frequência: "+descricao, Toast.LENGTH_SHORT).show();
+                                                    "frequência: "+descricao, Toast.LENGTH_LONG).show();
 
         }
     }

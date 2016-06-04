@@ -42,6 +42,8 @@ public class SegundaAtividade extends AppCompatActivity
     private Frequencia frequencia;
     private Movimento movimento_model;
     private MovimentoDAO movimentoDAO;
+    private Boolean alteracao = false;
+    private Integer categoria_id_alteracao ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,8 @@ public class SegundaAtividade extends AppCompatActivity
         if (extras!=null) {
             ArrayList<String> prop = extras.getStringArrayList("categoria");
             preencheControlesAteracao(prop);
+            alteracao = true;
+            categoria_id_alteracao = Integer.parseInt(prop.get(0));
         }
     }
 
@@ -86,7 +90,7 @@ public class SegundaAtividade extends AppCompatActivity
         finish();
     }
 
-    //Salvar Categoria
+    //Salvar/Alterar Categoria
     public void salvar(View v) {
         CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
         String tipo ="";
@@ -96,8 +100,15 @@ public class SegundaAtividade extends AppCompatActivity
         if (radioReceita.isChecked())
             tipo = "R";
 
-        String mensagem = categoriaDAO.inserir(tipo, campoNome.getText().toString().trim(), frequencia.getId(),
-                dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
+        String mensagem = "";
+        if (alteracao) {
+            mensagem = categoriaDAO.atualizar(categoria_id_alteracao,tipo, campoNome.getText().toString().trim(),
+                                        frequencia.getId(),dataCampo.getText().toString().trim(),
+                                        Float.parseFloat(valorCampo.getText().toString()));
+        }else{
+            mensagem = categoriaDAO.inserir(tipo, campoNome.getText().toString().trim(), frequencia.getId(),
+                    dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
+        }
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
     }
