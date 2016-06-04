@@ -1,32 +1,17 @@
 package com.example.tassyosantana.gestorfinancas;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.GridView;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import DAO.CategoriaDAO;
 import DAO.FrequenciaDAO;

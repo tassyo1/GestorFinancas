@@ -43,7 +43,7 @@ public class SegundaAtividade extends AppCompatActivity
     private Movimento movimento_model;
     private MovimentoDAO movimentoDAO;
     private Boolean alteracao = false;
-    private Integer categoria_id_alteracao ;
+    private Integer categoria_id_alteracao =0 ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,13 +101,18 @@ public class SegundaAtividade extends AppCompatActivity
             tipo = "R";
 
         String mensagem = "";
-        if (alteracao) {
-            mensagem = categoriaDAO.atualizar(categoria_id_alteracao,tipo, campoNome.getText().toString().trim(),
-                                        frequencia.getId(),dataCampo.getText().toString().trim(),
-                                        Float.parseFloat(valorCampo.getText().toString()));
+
+        if(categoriaDAO.validaNomeCategoria(campoNome.getText().toString().trim(),categoria_id_alteracao)) {
+            if (alteracao) {
+                mensagem = categoriaDAO.atualizar(categoria_id_alteracao, tipo, campoNome.getText().toString().trim(),
+                        frequencia.getId(), dataCampo.getText().toString().trim(),
+                        Float.parseFloat(valorCampo.getText().toString()));
+            } else {
+                mensagem = categoriaDAO.inserir(tipo, campoNome.getText().toString().trim(), frequencia.getId(),
+                        dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
+            }
         }else{
-            mensagem = categoriaDAO.inserir(tipo, campoNome.getText().toString().trim(), frequencia.getId(),
-                    dataCampo.getText().toString().trim(), Float.parseFloat(valorCampo.getText().toString()));
+            mensagem = "Já existe uma categoria com esse nome";
         }
 
         Toast.makeText(getApplicationContext(), mensagem, Toast.LENGTH_LONG).show();
@@ -178,8 +183,6 @@ public class SegundaAtividade extends AppCompatActivity
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
         frequencia = (Frequencia) parent.getSelectedItem();
-
-       // Toast.makeText(this, "Frequencia ID: " + frequencia.getId() + ",  Frequencia : " + frequencia.getDescricao(), Toast.LENGTH_SHORT).show();
     }
     @Override
     public void onNothingSelected(AdapterView<?> parent)

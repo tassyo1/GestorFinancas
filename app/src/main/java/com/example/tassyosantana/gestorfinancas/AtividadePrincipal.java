@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -35,8 +33,6 @@ import Model.Movimento;
 public class AtividadePrincipal extends AppCompatActivity implements OnItemClickListener{
     GridView grid;
     ArrayAdapter<String> adapter;
-    boolean mBound = false;
-    Categoria categoria;
     Movimento movimento_model;
     ArrayList<Categoria>arrayDeCategoria;
     @Override
@@ -71,31 +67,6 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         Intent Activity3 = new Intent(AtividadePrincipal.this, TerceiraAtividade.class);
         startActivityForResult(Activity3, 1);
         finish();
-    }
-
-
-    public boolean verificaData(){
-        try {
-            CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
-            categoria = categoriaDAO.buscaUltimaCategoria();
-
-            Date data = new Date();
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(data);
-
-            Date data_atual = cal.getTime(); //pega data atual
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-            Date data_widget = format.parse(categoria.getDataAgendada().toString());
-
-            if (data_widget.after(data_atual))
-                return true;
-            else
-                return false;
-        }catch (Exception e){
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-        return false;
     }
 
     public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array){

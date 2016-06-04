@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import DAO.Banco;
 import Model.Movimento;
 
 /**

@@ -6,9 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import DAO.Banco;
 import Model.Categoria;
 
 /**
@@ -124,7 +122,7 @@ public class CategoriaDAO {
 
     public Categoria buscaPorNome(String nome){
         String query =
-                "SELECT * FROM categorias where nome like '%"+nome+"%'";
+                "SELECT * FROM categorias where nome like '"+nome+"'";
         db = banco.getReadableDatabase();
         Cursor c = db.rawQuery(query,null);
 
@@ -144,6 +142,30 @@ public class CategoriaDAO {
         db.close();
 
         return categoria_model;
+    }
+    // categoria com nome já existente
+    public Boolean validaNomeCategoria(String nome, Integer id){
+        Boolean valida;
+        Categoria categoria = this.buscaPorNome(nome);
+
+        if (categoria.getNome() == null)
+            categoria.setNome("");
+
+        //alteração
+        if (id !=0) {
+            if (categoria.getNome().equals(""))
+                valida = true;
+            else if ((categoria.getNome().trim().equals(nome)) && (categoria.getId().toString().equals(id.toString())))
+                valida = true;
+            else
+                valida = false;
+        }else {
+            if (categoria.getNome().trim().equals(nome) )
+                valida = false;
+            else
+                valida = true;
+        }
+        return valida;
     }
 
     public Categoria buscaUltimaCategoria(){

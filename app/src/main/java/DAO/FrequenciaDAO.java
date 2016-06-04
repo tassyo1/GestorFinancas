@@ -1,15 +1,11 @@
 package DAO;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import DAO.Banco;
 import Model.Frequencia;
 
 /**
