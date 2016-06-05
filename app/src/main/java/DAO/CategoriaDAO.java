@@ -168,28 +168,7 @@ public class CategoriaDAO {
         return valida;
     }
 
-    public Categoria buscaUltimaCategoria(){
-        String query ="SELECT * FROM categorias ORDER BY id DESC LIMIT 1";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery(query,null);
-
-        if (c != null)
-            c.moveToFirst();
-
-        Categoria categoria_model = new Categoria();
-        categoria_model.setId(c.getInt(c.getColumnIndex("id")));
-        categoria_model.setNome(c.getString(c.getColumnIndex("nome")));
-        categoria_model.setDataAgendada(c.getString(c.getColumnIndex("data_agendada")));
-        categoria_model.setFrequencia_id(c.getInt(c.getColumnIndex("frequencia_id")));
-        categoria_model.setTipo(c.getString(c.getColumnIndex("tipo")));
-        categoria_model.setValor(c.getFloat(c.getColumnIndex("valor")));
-
-        db.close();
-        return categoria_model;
-
-    }
-    //busca as categorias sem movimentos e com a data igual ou inferior a hoje
     public ArrayList<Categoria> buscaCategoriasEventuais() {
 
         String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where categoria_id is null "+
