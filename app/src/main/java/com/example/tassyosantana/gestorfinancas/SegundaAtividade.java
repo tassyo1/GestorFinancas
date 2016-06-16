@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,7 +52,13 @@ public class SegundaAtividade extends AppCompatActivity
         setContentView(R.layout.activity_segunda_atividade);
 
         findViewsById();
-        PreencherSpinner();
+        try {
+            PreencherSpinner();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
         Bundle extras = getIntent().getExtras();
 
@@ -63,9 +70,9 @@ public class SegundaAtividade extends AppCompatActivity
         }
     }
 
-    public void PreencherSpinner(){
+    public void PreencherSpinner() throws SQLException, ClassNotFoundException{
         //DropDown
-        FrequenciaDAO frequenciaDados = new FrequenciaDAO(getBaseContext());
+        FrequenciaDAO frequenciaDados = new FrequenciaDAO();
         ArrayAdapter<Frequencia> adapter = new ArrayAdapter<Frequencia>(this,android.R.layout.simple_spinner_item,frequenciaDados.getAllFrequencia()){
             public View getView(int position, View convertView, ViewGroup parent){
                 View view = super.getView(position, convertView, parent);
@@ -91,8 +98,8 @@ public class SegundaAtividade extends AppCompatActivity
     }
 
     //Salvar/Alterar Categoria
-    public void salvar(View v) {
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+    public void salvar(View v) throws SQLException, ClassNotFoundException{
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
         String tipo ="";
 
         if (radioDespesa.isChecked())

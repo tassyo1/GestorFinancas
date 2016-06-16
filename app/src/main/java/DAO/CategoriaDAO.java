@@ -14,8 +14,8 @@ import Model.Categoria;
 public class CategoriaDAO {
 
     private Banco banco;
-    PreparedStatement pstmt;
-    Statement stmt;
+    private PreparedStatement pstmt;
+    private Statement stmt;
 
     public CategoriaDAO() throws SQLException, ClassNotFoundException{
         banco = new Banco();

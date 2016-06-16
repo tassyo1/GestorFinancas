@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import DAO.CategoriaDAO;
@@ -23,7 +24,13 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terceira_atividade2);
-        preencherLista();
+        try {
+            preencherLista();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -33,9 +40,9 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         finish();
     }
 
-    public void preencherLista(){
+    public void preencherLista() throws SQLException, ClassNotFoundException{
         ArrayList<String> ar = new ArrayList<String>();
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
 
 
         if (categoriaDAO.listaTodasCategorias().size() > 0){
@@ -56,39 +63,47 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        if(((TextView) v).getText().equals("Editar")) {
-            GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
-            TextView tv = (TextView) gv.getAdapter().getView(position - 1, null, gv);
-            EditarClick(tv.getText().toString().trim());
-        }else if(((TextView) v).getText().equals("Excluir")){
-            GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
-            TextView tv = (TextView) gv.getAdapter().getView(position - 2, null, gv);
-            ExcluirClick(tv.getText().toString().trim());
-        }else{
-            CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
-            Categoria categoria = categoriaDAO.buscaPorNome(((TextView) v).getText().toString().trim());
+        try {
+            if (((TextView) v).getText().equals("Editar")) {
+                GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
+                TextView tv = (TextView) gv.getAdapter().getView(position - 1, null, gv);
+                EditarClick(tv.getText().toString().trim());
+            } else if (((TextView) v).getText().equals("Excluir")) {
+                GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
+                TextView tv = (TextView) gv.getAdapter().getView(position - 2, null, gv);
+                ExcluirClick(tv.getText().toString().trim());
+            } else {
+                CategoriaDAO categoriaDAO = new CategoriaDAO();
+                Categoria categoria = categoriaDAO.buscaPorNome(((TextView) v).getText().toString().trim());
 
-            String tipo="";
-            if (categoria.getTipo().equals("D"))
-                tipo ="despesa";
-            else
-                tipo ="receita";
+                String tipo = "";
+                if (categoria.getTipo().equals("D"))
+                    tipo = "despesa";
+                else
+                    tipo = "receita";
 
-            FrequenciaDAO frequenciaDAO = new FrequenciaDAO(getBaseContext());
-            String descricao = frequenciaDAO.buscaFrequenciaPorId(categoria.getFrequencia_id());
+                FrequenciaDAO frequenciaDAO = new FrequenciaDAO();
+                String descricao = frequenciaDAO.buscaFrequenciaPorId(categoria.getFrequencia_id());
 
-            //Ver as informações da categoria ao clicar na célula
-            Toast.makeText(getApplicationContext(), "categoria: "+categoria.getNome()+"\n"+
-                                                    "valor: R$"+categoria.getValor()+"\n"+
-                                                    "data: "+categoria.getDataAgendada()+"\n"+
-                                                    "tipo: "+tipo+"\n"+
-                                                    "frequência: "+descricao, Toast.LENGTH_LONG).show();
+                //Ver as informações da categoria ao clicar na célula
+                Toast.makeText(getApplicationContext(), "categoria: " + categoria.getNome() + "\n" +
+                        "valor: R$" + categoria.getValor() + "\n" +
+                        "data: " + categoria.getDataAgendada() + "\n" +
+                        "tipo: " + tipo + "\n" +
+                        "frequência: " + descricao, Toast.LENGTH_LONG).show();
 
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
-    public void ExcluirClick(String descricao_categoria){
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+    public void ExcluirClick(String descricao_categoria) throws SQLException, ClassNotFoundException{
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
         Categoria categoria = categoriaDAO.buscaPorNome(descricao_categoria.trim());
 
         if (categoriaDAO.temMovimento(categoria.getId()))
@@ -100,8 +115,8 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         }
     }
 
-    public void EditarClick(String descricao_categoria){
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
+    public void EditarClick(String descricao_categoria) throws SQLException, ClassNotFoundException{
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
         Categoria categoria = categoriaDAO.buscaPorNome(descricao_categoria.trim());
         ArrayList <String> prop = new ArrayList<String>();
 

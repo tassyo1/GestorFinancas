@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,11 +47,18 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         super.onStart();
     }
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();  // Always call the superclass method first
-        geraMovimentosEventuais();
-        geraMovimentosFrequentes();
-        preencheGrid();
+        try {
+            geraMovimentosEventuais();
+            geraMovimentosFrequentes();
+            preencheGrid();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -69,8 +77,8 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         finish();
     }
 
-    public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array){
-        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+    public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array) throws SQLException, ClassNotFoundException {
+        MovimentoDAO movimentoDAO = new MovimentoDAO();
         Movimento movimento_geral;
         ArrayList<Categoria> marcadosExclusao = new ArrayList<Categoria>();
 
@@ -86,9 +94,9 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
 
         return array;
     }
-    public void geraMovimentosFrequentes(){
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
-        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+    public void geraMovimentosFrequentes() throws SQLException, ClassNotFoundException {
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
+        MovimentoDAO movimentoDAO = new MovimentoDAO();
         arrayDeCategoria = removeCategoriaQueGerouMovimento(categoriaDAO.buscaCategoriasFrequentes());
 
         Date agora = new Date();
@@ -193,9 +201,9 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
             }
         }
     }
-    public void geraMovimentosEventuais(){
-        CategoriaDAO categoriaDAO = new CategoriaDAO(getBaseContext());
-        MovimentoDAO movimentoDAO = new MovimentoDAO(getBaseContext());
+    public void geraMovimentosEventuais() throws SQLException, ClassNotFoundException {
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
+        MovimentoDAO movimentoDAO = new MovimentoDAO();
         arrayDeCategoria = categoriaDAO.buscaCategoriasEventuais();
 
         if (arrayDeCategoria.size() > 0) {
@@ -212,9 +220,9 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         }
     }
 
-    public void preencheGrid(){
+    public void preencheGrid() throws SQLException, ClassNotFoundException {
         ArrayList <String> a = new ArrayList<String>();
-        MovimentoDAO movimentoDados = new MovimentoDAO(getBaseContext());
+        MovimentoDAO movimentoDados = new MovimentoDAO();
         if (movimentoDados.buscaTodosMovimentos().size() > 0) {
 
             for (int i = 0; i < movimentoDados.buscaTodosMovimentos().size(); i++) {

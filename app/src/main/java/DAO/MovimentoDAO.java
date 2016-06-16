@@ -1,37 +1,41 @@
 package DAO;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import java.util.ArrayList;
 
 import Model.Movimento;
 
 /**
- * Created by tassyosantana on 06/05/16.
+ * Created by tassyosantana on 16/06/16.
  */
 public class MovimentoDAO  {
-    private SQLiteDatabase db;
+
     private Banco banco;
+    private Statement stmt;
+    private PreparedStatement pstmt;
 
 
-    public MovimentoDAO(Context context){
-        banco = new Banco(context);
+    public MovimentoDAO()throws SQLException, ClassNotFoundException{
+        banco = new Banco();
+        stmt = banco.getConn().createStatement();
 
     }
-    public String inserir(String data_lancamento, Float saldo, Integer categoria_id){
-        ContentValues valores;
+    public String inserir(String data_lancamento, Float saldo, Integer categoria_id) throws  SQLException{
+        pstmt = banco.getConn().prepareStatement("insert into movimentos (data_lancamento, saldo_atual," +
+                " categoria_id ) values(?,?,?)");
+
         long resultado;
-        db = banco.getWritableDatabase();
-        valores = new ContentValues();
-        valores.put("data_lancamento",data_lancamento);
-        valores.put("saldo_atual",saldo);
-        valores.put("categoria_id",categoria_id);
-        resultado = db.insert("movimentos",null,valores);
-        db.close();
+
+        pstmt.setString(1, data_lancamento);
+        pstmt.setString(2, saldo.toString());
+        pstmt.setString(3, categoria_id.toString());
+
+        resultado = pstmt.executeUpdate();
+        banco.fecharConexao();
 
         if (resultado == -1)
             return "Erro ao inserir registro";
@@ -40,7 +44,7 @@ public class MovimentoDAO  {
     }
 
     //usado para preencher o grid
-    public ArrayList<Movimento> buscaTodosMovimentos(){
+    public ArrayList<Movimento> buscaTodosMovimentos() throws SQLException{
         ArrayList<Movimento> movimentos = new ArrayList<Movimento>();
         String query =
                 "SELECT categorias.nome, categorias.valor, data_lancamento, saldo_atual, categorias.tipo FROM movimentos "
@@ -48,67 +52,57 @@ public class MovimentoDAO  {
                         "date (substr(data_lancamento, 7, 4) || '-' ||"+
                 "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) desc";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery(query,null);
+        ResultSet rs = stmt.executeQuery(query);
 
-        if (c.moveToFirst()){
-            do {
-                Movimento movimento_model = new Movimento();
-                movimento_model.setData_lancamento(c.getString(c.getColumnIndex("data_lancamento")));
-                movimento_model.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual")));
-                movimento_model.setNome_categoria(c.getString(c.getColumnIndex("nome")));
-                movimento_model.setValor(c.getFloat(c.getColumnIndex("valor")));
-                movimento_model.setTipo(c.getString(c.getColumnIndex("tipo")));
+        while (rs.next()) {
 
-                movimentos.add(movimento_model);
-            }while(c.moveToNext());
+            Movimento movimento_model = new Movimento();
+            movimento_model.setData_lancamento(rs.getString("data_lancamento"));
+            movimento_model.setSaldo_atual(rs.getFloat("saldo_atual"));
+            movimento_model.setNome_categoria(rs.getString("nome"));
+            movimento_model.setValor(rs.getFloat("valor"));
+            movimento_model.setTipo(rs.getString("tipo"));
+
+            movimentos.add(movimento_model);
         }
-        db.close();
+        banco.fecharConexao();
         return movimentos;
     }
 
-    public Movimento buscaUltimoMovimento(){
+    public Movimento buscaUltimoMovimento() throws SQLException{
         Movimento movimento_model = new Movimento();
         String query =
                 "SELECT * FROM movimentos ORDER BY id DESC LIMIT 1";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery(query,null);
+        ResultSet rs = stmt.executeQuery(query);
 
-        if (c != null && c.getCount()>0) {
-            c.moveToFirst();
-
-            movimento_model.setId(c.getInt(c.getColumnIndex("id")));
-            movimento_model.setData_lancamento(c.getString(c.getColumnIndex("data_lancamento")));
-            movimento_model.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual")));
-            movimento_model.setCategoria_id(c.getInt(c.getColumnIndex("categoria_id")));
+        while(rs.next()) {
+            movimento_model.setId(rs.getInt("id"));
+            movimento_model.setData_lancamento(rs.getString("data_lancamento"));
+            movimento_model.setSaldo_atual(rs.getFloat("saldo_atual"));
+            movimento_model.setCategoria_id(rs.getInt("categoria_id"));
         }
 
-        db.close();
+        banco.fecharConexao();
 
         return movimento_model;
     }
 
     //traz movimentos com categoria passada por parâmetro  que foram lançados hj
-    public Movimento buscaMovimentosPorCategoriaHoje(int categoria_id){
+    public Movimento buscaMovimentosPorCategoriaHoje(int categoria_id) throws SQLException{
         Movimento movimento = new Movimento();
         String query = "select distinct categoria_id from movimentos where categoria_id ="+categoria_id+
                         " and DATE (substr(data_lancamento, 7, 4) || '-' || " +
                         "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) " +
                         " <=  date('now');  ";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery(query,null);
+        ResultSet rs = stmt.executeQuery(query);
 
-        if (c != null && c.getCount()>0) {
-            c.moveToFirst();
-
-          /*  movimento.setId(c.getInt(c.getColumnIndex("id")));
-            movimento.setData_lancamento(c.getString(c.getColumnIndex("data_lancamento")));
-            movimento.setSaldo_atual(c.getFloat(c.getColumnIndex("saldo_atual"))); */
-            movimento.setCategoria_id(c.getInt(c.getColumnIndex("categoria_id")));
+        while (rs.next()){
+            movimento.setCategoria_id(rs.getInt("categoria_id"));
         }
-        db.close();
+
+        banco.fecharConexao();
 
         return movimento;
     }
