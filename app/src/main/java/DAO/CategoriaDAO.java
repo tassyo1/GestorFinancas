@@ -1,10 +1,8 @@
 package DAO;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Categoria;
@@ -13,7 +11,7 @@ import Model.Categoria;
  * Created by tassyosantana on 06/05/16.
  */
 public class CategoriaDAO {
-    private SQLiteDatabase db;
+
     private Banco banco;
 
     public CategoriaDAO(Context context){

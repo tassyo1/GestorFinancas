@@ -1,9 +1,8 @@
 package DAO;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import Model.Frequencia;
@@ -12,40 +11,36 @@ import Model.Frequencia;
  * Created by tassyosantana on 06/05/16.
  */
 public class FrequenciaDAO {
-    private SQLiteDatabase db;
     private Banco banco;
+    private Statement stmt;
 
-
-    public FrequenciaDAO(Context context){
-        banco = new Banco(context);
+    public FrequenciaDAO() throws SQLException, ClassNotFoundException{
+        banco = new Banco();
+        stmt = (Statement) banco.getConn().createStatement();
     }
 
-    public ArrayList<Frequencia> getAllFrequencia(){
+    public ArrayList<Frequencia> getAllFrequencia() throws SQLException{
         ArrayList<Frequencia> frequencias = new ArrayList<Frequencia>();
         String query = "SELECT id, descricao FROM frequencias order by id asc;";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery(query,null);
-        if(c.moveToFirst()){
-            do {
-                frequencias.add( new Frequencia(c.getInt(c.getColumnIndex("id")),
-                        c.getString(c.getColumnIndex("descricao"))) );
-            }while(c.moveToNext());
+        ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()){
+            frequencias.add(new Frequencia(rs.getInt("id"),rs.getString("descricao")));
         }
+        banco.fecharConexao();
         return frequencias;
     }
 
-    public String buscaFrequenciaPorId(Integer id){
+    public String buscaFrequenciaPorId(Integer id) throws SQLException{
         String descricao ="";
 
-        db = banco.getReadableDatabase();
-        Cursor c = db.rawQuery("select descricao from frequencias where id ="+id, null);
 
-        if(c.moveToFirst()){
-            do{
-                descricao = c.getString(c.getColumnIndex("descricao"));
-            }while (c.moveToNext());
+        ResultSet rs = stmt.executeQuery("select descricao from frequencias where id =" + id);
+
+        while (rs.next()){
+            descricao = rs.getString("descricao");
         }
+        banco.fecharConexao();
         return descricao;
     }
 
