@@ -1,8 +1,5 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 
 /**
@@ -10,22 +7,11 @@ import java.sql.SQLException;
  */
 public class Banco {
 
-    private String driver ="com.mysql.jdbc.Driver";
-    private String url ="jdbc:mysql://localhost:3306/gestor_financas_development";
-    private String user = "root";
-    private Connection conn;
+    private String SOAP_ACTION = "\"http://bd/retornaString\"";
+    private String METHOD_NAME = "retornaString";
+    private String NAMESPACE = "http://bd/";
+    private String URL = "http://192.168.1.100:8080/ConnectionService/ConnectionService?WSDL";
 
-    public Banco() throws SQLException, ClassNotFoundException{
-        Class.forName(driver);
-        conn = (Connection) DriverManager.getConnection(url,user,"");
-    }
 
-    public Connection getConn(){
-        return conn;
-    }
-
-    public void fecharConexao() throws SQLException{
-        conn.close();
-    }
 
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -40,6 +41,11 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_atividade_principal);
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 
     @Override
@@ -49,15 +55,16 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
     @Override
     protected void onResume() {
         super.onResume();  // Always call the superclass method first
-        try {
-            geraMovimentosEventuais();
-            geraMovimentosFrequentes();
-            preencheGrid();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
         }
+            //geraMovimentosEventuais();
+            //geraMovimentosFrequentes();
+            //preencheGrid();
+
+
 
     }
 

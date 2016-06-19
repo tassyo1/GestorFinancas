@@ -1,6 +1,7 @@
 package com.example.tassyosantana.gestorfinancas;
 
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,6 +25,13 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_terceira_atividade2);
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+
         try {
             preencherLista();
         } catch (SQLException e) {
@@ -83,7 +91,7 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
                     tipo = "receita";
 
                 FrequenciaDAO frequenciaDAO = new FrequenciaDAO();
-                String descricao = frequenciaDAO.buscaFrequenciaPorId(categoria.getFrequencia_id());
+                String descricao = frequenciaDAO.buscaFrequenciaPorId(categoria.getId());
 
                 //Ver as informações da categoria ao clicar na célula
                 Toast.makeText(getApplicationContext(), "categoria: " + categoria.getNome() + "\n" +

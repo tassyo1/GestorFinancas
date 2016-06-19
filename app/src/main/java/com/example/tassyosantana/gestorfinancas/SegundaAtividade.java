@@ -2,6 +2,7 @@ package com.example.tassyosantana.gestorfinancas;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -45,14 +46,21 @@ public class SegundaAtividade extends AppCompatActivity
     private MovimentoDAO movimentoDAO;
     private Boolean alteracao = false;
     private Integer categoria_id_alteracao =0 ;
-
+    FrequenciaDAO frequenciaDados = new FrequenciaDAO();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_segunda_atividade);
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
+
         findViewsById();
         try {
+
             PreencherSpinner();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -72,7 +80,7 @@ public class SegundaAtividade extends AppCompatActivity
 
     public void PreencherSpinner() throws SQLException, ClassNotFoundException{
         //DropDown
-        FrequenciaDAO frequenciaDados = new FrequenciaDAO();
+
         ArrayAdapter<Frequencia> adapter = new ArrayAdapter<Frequencia>(this,android.R.layout.simple_spinner_item,frequenciaDados.getAllFrequencia()){
             public View getView(int position, View convertView, ViewGroup parent){
                 View view = super.getView(position, convertView, parent);
