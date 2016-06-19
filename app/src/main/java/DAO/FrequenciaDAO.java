@@ -1,16 +1,10 @@
 package DAO;
 
-
 import android.util.Log;
-
-import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
-import org.ksoap2.transport.HttpTransportSE;
-
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Vector;
 
 import Model.Frequencia;
@@ -19,31 +13,22 @@ import Model.Frequencia;
  * Created by tassyosantana on 06/05/16.
  */
 public class FrequenciaDAO {
-
-
+    private ArrayList<String> soapParams;
+    private HashMap params;
 
     public ArrayList<Frequencia> getAllFrequencia() {
         ArrayList<Frequencia> lista = new ArrayList<Frequencia>();
-        String SOAP_ACTION = "http://ws/getAllFrequencia";
-        String METHOD_NAME = "getAllFrequencia";
-        String NAMESPACE = "http://ws/";
-        String URL = "http://192.168.1.100:8080/WSConnectionMySQL/FrequenciaWebService?WSDL";
+
+        soapParams = new ArrayList<String>();
+        soapParams.add(0,"http://ws/getAllFrequencia"); //SOAP_ACTION
+        soapParams.add(1,"getAllFrequencia"); //METHOD_NAME
+        soapParams.add(2,"http://ws/"); //NAMESPACE
+        soapParams.add(3,"http://192.168.1.100:8080/WSConnectionMySQL/FrequenciaWebService?WSDL"); //URL
 
         try {
-            SoapObject request = new SoapObject(NAMESPACE, METHOD_NAME);
-            
-
-            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-            soapEnvelope.implicitTypes = true;
-            soapEnvelope.setAddAdornments(false);
-            soapEnvelope.dotNet = false;
-            soapEnvelope.setOutputSoapObject(request);
-
-
-            HttpTransportSE transport = new HttpTransportSE(URL);
-            transport.call(SOAP_ACTION, soapEnvelope);
-
-            Vector<SoapObject> resposta =(Vector<SoapObject>) soapEnvelope.getResponse();
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(false);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
 
             for ( SoapObject obj: resposta) {
                 Frequencia frequencia = new Frequencia();
@@ -51,7 +36,6 @@ public class FrequenciaDAO {
                 frequencia.setDescricao(obj.getProperty("descricao").toString());
                 lista.add(frequencia);
             }
-
             return lista;
 
         } catch (Exception ex) {
@@ -61,30 +45,21 @@ public class FrequenciaDAO {
         return lista;
     }
 
-
-
     public String buscaFrequenciaPorId(Integer id) {
-        String SOAP_ACTION = "\"http://bd/buscaFrequenciaPorId\"";
-        String METHOD_NAME = "buscaFrequenciaPorId";
-        String NAMESPACE = "http://bd/";
-        String URL = "http://192.168.1.100:8080/WSConnectionMySQL/FrequenciaWebService?WSDL";
-
+        soapParams = new ArrayList<String>();
+        soapParams.add(0,"http://ws/buscaFrequenciaPorId"); //SOAP_ACTION
+        soapParams.add(1,"buscaFrequenciaPorId"); //METHOD_NAME
+        soapParams.add(2,"http://ws/"); //NAMESPACE
+        soapParams.add(3,"http://192.168.1.100:8080/WSConnectionMySQL/FrequenciaWebService?WSDL"); //URL
+        params = new HashMap();
         try {
-            SoapObject Request = new SoapObject(NAMESPACE, METHOD_NAME);
-            Request.addProperty("id", id);
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(true);
+            params.put("id",id);
 
-            SoapSerializationEnvelope soapEnvelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-            soapEnvelope.implicitTypes = true;
-            soapEnvelope.setAddAdornments(false);
-            soapEnvelope.dotNet = false;
-            soapEnvelope.setOutputSoapObject(Request);
+            SoapPrimitive resposta =(SoapPrimitive) wsc.requestWebService(soapParams,params);
 
-
-            HttpTransportSE transport = new HttpTransportSE(URL);
-
-            transport.call(SOAP_ACTION, soapEnvelope);
-          //  descricao = soapEnvelope.getResponse().toString();
-
+            return resposta.toString();
         } catch (Exception ex) {
 
             Log.e("Response ", "Error: " + ex.getMessage());

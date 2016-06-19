@@ -1,11 +1,14 @@
 package DAO;
 
+import android.util.Log;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import Model.Movimento;
 
@@ -13,18 +16,10 @@ import Model.Movimento;
  * Created by tassyosantana on 16/06/16.
  */
 public class MovimentoDAO  {
+    private ArrayList<String> soapParams;
+    private HashMap params;
 
-
-
-
-    public MovimentoDAO(){
-
-
-    }
     public String inserir(String data_lancamento, Float saldo, Integer categoria_id) {
-        /*"insert into movimentos (data_lancamento, saldo_atual," +
-                " categoria_id ) values(?,?,?)");*/
-
 
 
         return "Registro inserido com sucesso";
