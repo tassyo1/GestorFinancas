@@ -145,18 +145,39 @@ public class CategoriaDAO {
         return array;
     }
 
-    public Categoria buscaPorNome(String nome) throws SQLException {
-        String query = "SELECT * FROM categorias where nome like '" + nome + "'";
+    public Categoria buscaPorNome(String nome) {
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/listaTodasCategorias");
+        soapParams.add(1, "listaTodasCategorias");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/CategoriaWebService?WSDL");
+        params = new HashMap();
 
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(true);
+            params.put("nome",nome);
+            Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams,params);
+            Categoria categoria_model = new Categoria();
 
-        Categoria categoria_model = new Categoria();
-
-
-        return categoria_model;
+            for (SoapObject obj: resposta) {
+                categoria_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                categoria_model.setNome(obj.getProperty("nome").toString());
+                categoria_model.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria_model.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
+                categoria_model.setTipo(obj.getProperty("tipo").toString());
+                categoria_model.setValor(Float.parseFloat (obj.getProperty("valor").toString()));
+            }
+            return categoria_model;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
+        return null;
     }
 
     // categoria com nome já existente
-    public Boolean validaNomeCategoria(String nome, Integer id) throws SQLException {
+    public Boolean validaNomeCategoria(String nome, Integer id) {
         Boolean valida;
         Categoria categoria = this.buscaPorNome(nome);
 
@@ -182,26 +203,65 @@ public class CategoriaDAO {
 
 
     public ArrayList<Categoria> buscaCategoriasEventuais() {
+        ArrayList<Categoria> array = new ArrayList<>();
 
-        String query = "select categorias.* from categorias left join movimentos on categorias.id = categoria_id where categoria_id is null " +
-                "and DATE (substr(data_agendada, 7, 4) || '-' || substr(data_agendada, 4, 2) || '-' || substr(data_agendada, 1, 2)) " +
-                "<= date('now') and frequencia_id = 1;";
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/buscaCategoriasEventuais");
+        soapParams.add(1, "buscaCategoriasEventuais");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/CategoriaWebService?WSDL");
 
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(false);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
 
-        ArrayList<Categoria> array = new ArrayList<Categoria>();
-
+            for ( SoapObject obj : resposta){
+                Categoria categoria = new Categoria();
+                categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                categoria.setNome(obj.getProperty("nome").toString());
+                categoria.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria.setTipo(obj.getProperty("tipo").toString());
+                categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                array.add(categoria);
+            }
+            return array;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
 
         return array;
     }
 
     public ArrayList<Categoria> buscaCategoriasFrequentes() {
-        String query = "select categorias.* from categorias where frequencia_id <> 1 " +
-                "and DATE (substr(data_agendada, 7, 4) || '-' || substr(data_agendada, 4, 2) || '-' || substr(data_agendada, 1, 2)) " +
-                "<= date('now');";
+        ArrayList<Categoria> array = new ArrayList<>();
 
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/buscaCategoriasFrequentes");
+        soapParams.add(1, "buscaCategoriasFrequentes");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/CategoriaWebService?WSDL");
 
-        ArrayList<Categoria> array = new ArrayList<Categoria>();
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(false);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
 
+            for ( SoapObject obj : resposta){
+                Categoria categoria = new Categoria();
+                categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                categoria.setNome(obj.getProperty("nome").toString());
+                categoria.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria.setTipo(obj.getProperty("tipo").toString());
+                categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                array.add(categoria);
+            }
+            return array;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
 
         return array;
     }

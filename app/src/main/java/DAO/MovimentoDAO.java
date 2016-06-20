@@ -2,6 +2,9 @@ package DAO;
 
 import android.util.Log;
 
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +12,9 @@ import java.sql.Statement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
+import Model.Categoria;
 import Model.Movimento;
 
 /**
@@ -20,46 +25,112 @@ public class MovimentoDAO  {
     private HashMap params;
 
     public String inserir(String data_lancamento, Float saldo, Integer categoria_id) {
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/inserir");
+        soapParams.add(1, "inserir");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
+        params = new HashMap();
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(true);
+            params.put("data", data_lancamento);
+            params.put("saldo", saldo);
+            params.put("categoria_id", categoria_id);
 
-
-        return "Registro inserido com sucesso";
+            SoapPrimitive resposta = (SoapPrimitive) wsc.requestWebService(soapParams, params);
+            return resposta.toString();
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
+        }
     }
 
     //usado para preencher o grid
     public ArrayList<Movimento> buscaTodosMovimentos(){
-        ArrayList<Movimento> movimentos = new ArrayList<Movimento>();
-        String query =
-                "SELECT categorias.nome, categorias.valor, data_lancamento, saldo_atual, categorias.tipo FROM movimentos "
-                +"INNER JOIN categorias ON categorias.id = movimentos.categoria_id ORDER BY " +
-                        "date (substr(data_lancamento, 7, 4) || '-' ||"+
-                "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) desc";
+        ArrayList<Movimento> array = new ArrayList<>();
 
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/buscaTodosMovimentos");
+        soapParams.add(1, "buscaTodosMovimentos");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
 
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(false);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
 
-        return movimentos;
+            for ( SoapObject obj : resposta){
+                Movimento movimento_model = new Movimento();
+                movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
+                movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
+                movimento_model.setNome_categoria(obj.getProperty("nome").toString());
+                movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                movimento_model.setTipo(obj.getProperty("tipo").toString());
+                array.add(movimento_model);
+            }
+            return array;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
+
+        return array;
     }
 
     public Movimento buscaUltimoMovimento() {
-        Movimento movimento_model = new Movimento();
-        String query =
-                "SELECT * FROM movimentos ORDER BY id DESC LIMIT 1";
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/buscaUltimoMovimento");
+        soapParams.add(1, "buscaUltimoMovimento");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
 
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(false);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
+            Movimento movimento_model = new Movimento();
 
-
-        return movimento_model;
+            for ( SoapObject obj : resposta){
+                movimento_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
+                movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString() ));
+                movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString()) );
+            }
+            return movimento_model;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
+        return null;
     }
 
     //traz movimentos com categoria passada por parâmetro  que foram lançados hj
     public Movimento buscaMovimentosPorCategoriaHoje(int categoria_id) {
-        Movimento movimento = new Movimento();
-        String query = "select distinct categoria_id from movimentos where categoria_id ="+categoria_id+
-                        " and DATE (substr(data_lancamento, 7, 4) || '-' || " +
-                        "substr(data_lancamento, 4, 2) || '-' || substr(data_lancamento, 1, 2)) " +
-                        " <=  date('now');  ";
+        soapParams = new ArrayList<>();
+        soapParams.add(0, "http://ws/buscaMovimentosPorCategoriaHoje");
+        soapParams.add(1, "buscaMovimentosPorCategoriaHoje");
+        soapParams.add(2, "http://ws/");
+        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
+        params = new HashMap();
+        try {
+            WebServiceConnection wsc = new WebServiceConnection();
+            wsc.setTemParametro(true);
+            params.put("categoria_id", categoria_id);
+            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,params);
+            Movimento movimento_model = new Movimento();
 
-
-
-        return movimento;
+            for ( SoapObject obj : resposta){
+                movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString() ));
+            }
+            return movimento_model;
+        } catch (Exception ex) {
+            ex.getStackTrace();
+            Log.e("Response ", "Error: " + ex.getMessage());
+        }
+        return null;
     }
 
 }
