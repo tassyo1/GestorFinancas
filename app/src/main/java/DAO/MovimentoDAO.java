@@ -52,10 +52,20 @@ public class MovimentoDAO  {
             wsc.setTemParametro(false);
             Movimento movimento_model;
 
-            if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
-                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, null);
-
-                for (SoapObject obj : resposta) {
+            if (!(wsc.requestWebService(soapParams, null) == null)) {
+                if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
+                    Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, null);
+                    for (SoapObject obj : resposta) {
+                        movimento_model = new Movimento();
+                        movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
+                        movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
+                        movimento_model.setNome_categoria(obj.getProperty("nome").toString());
+                        movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                        movimento_model.setTipo(obj.getProperty("tipo").toString());
+                        array.add(movimento_model);
+                    }
+                } else {
+                    SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
                     movimento_model = new Movimento();
                     movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
                     movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
@@ -64,15 +74,6 @@ public class MovimentoDAO  {
                     movimento_model.setTipo(obj.getProperty("tipo").toString());
                     array.add(movimento_model);
                 }
-            }else{
-                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
-                movimento_model = new Movimento();
-                movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
-                movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
-                movimento_model.setNome_categoria(obj.getProperty("nome").toString());
-                movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
-                movimento_model.setTipo(obj.getProperty("tipo").toString());
-                array.add(movimento_model);
             }
             return array;
         } catch (Exception ex) {
