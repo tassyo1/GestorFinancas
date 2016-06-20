@@ -142,7 +142,7 @@ public class CategoriaDAO {
                     array.add(categoria);
                 }
             }else{
-                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams,params);
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams,null);
                 categoria = new Categoria();
                 categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
                 categoria.setNome(obj.getProperty("nome").toString());
@@ -229,7 +229,7 @@ public class CategoriaDAO {
             wsc.setTemParametro(false);
             Categoria categoria;
             if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
-                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, params);
+                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, null);
                 for (SoapObject obj : resposta) {
                     categoria = new Categoria();
                     categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
@@ -240,7 +240,7 @@ public class CategoriaDAO {
                     array.add(categoria);
                 }
             } else {
-                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, params);
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
                 categoria = new Categoria();
                 categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
                 categoria.setNome(obj.getProperty("nome").toString());

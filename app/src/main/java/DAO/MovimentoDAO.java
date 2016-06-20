@@ -1,20 +1,10 @@
 package DAO;
-
 import android.util.Log;
-
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
-
-import Model.Categoria;
 import Model.Movimento;
 
 /**
@@ -126,16 +116,16 @@ public class MovimentoDAO  {
         soapParams.add(2, "http://ws/");
         soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
         params = new HashMap();
+
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(true);
             params.put("categoria_id", categoria_id);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,params);
+            SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, params);
             Movimento movimento_model = new Movimento();
 
-            for ( SoapObject obj : resposta){
-                movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString() ));
-            }
+            movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString()));
+
             return movimento_model;
         } catch (Exception ex) {
             ex.getStackTrace();
@@ -143,5 +133,4 @@ public class MovimentoDAO  {
         }
         return null;
     }
-
 }
