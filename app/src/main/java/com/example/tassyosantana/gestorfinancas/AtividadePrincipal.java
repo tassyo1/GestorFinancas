@@ -60,11 +60,9 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
-            //geraMovimentosEventuais();
-            //geraMovimentosFrequentes();
-            //preencheGrid();
-
-
+            geraMovimentosEventuais();
+            geraMovimentosFrequentes();
+            preencheGrid();
 
     }
 
@@ -84,7 +82,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         finish();
     }
 
-    public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array) throws SQLException, ClassNotFoundException {
+    public ArrayList<Categoria> removeCategoriaQueGerouMovimento(ArrayList<Categoria> array)  {
         MovimentoDAO movimentoDAO = new MovimentoDAO();
         Movimento movimento_geral;
         ArrayList<Categoria> marcadosExclusao = new ArrayList<Categoria>();
@@ -101,7 +99,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
 
         return array;
     }
-    public void geraMovimentosFrequentes() throws SQLException, ClassNotFoundException {
+    public void geraMovimentosFrequentes()  {
         CategoriaDAO categoriaDAO = new CategoriaDAO();
         MovimentoDAO movimentoDAO = new MovimentoDAO();
         arrayDeCategoria = removeCategoriaQueGerouMovimento(categoriaDAO.buscaCategoriasFrequentes());
@@ -208,7 +206,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
             }
         }
     }
-    public void geraMovimentosEventuais() throws SQLException, ClassNotFoundException {
+    public void geraMovimentosEventuais() {
         CategoriaDAO categoriaDAO = new CategoriaDAO();
         MovimentoDAO movimentoDAO = new MovimentoDAO();
         arrayDeCategoria = categoriaDAO.buscaCategoriasEventuais();
@@ -227,7 +225,7 @@ public class AtividadePrincipal extends AppCompatActivity implements OnItemClick
         }
     }
 
-    public void preencheGrid() throws SQLException, ClassNotFoundException {
+    public void preencheGrid() {
         ArrayList <String> a = new ArrayList<String>();
         MovimentoDAO movimentoDados = new MovimentoDAO();
         if (movimentoDados.buscaTodosMovimentos().size() > 0) {

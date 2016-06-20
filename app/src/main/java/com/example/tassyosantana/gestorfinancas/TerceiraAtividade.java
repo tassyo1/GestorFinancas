@@ -31,15 +31,7 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
             StrictMode.setThreadPolicy(policy);
         }
 
-
-        try {
-            preencherLista();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+        preencherLista();
     }
 
     public void telaAnterior(View view){
@@ -48,7 +40,7 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         finish();
     }
 
-    public void preencherLista() throws SQLException, ClassNotFoundException{
+    public void preencherLista() {
         ArrayList<String> ar = new ArrayList<String>();
         CategoriaDAO categoriaDAO = new CategoriaDAO();
 
@@ -71,7 +63,6 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
 
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        try {
             if (((TextView) v).getText().equals("Editar")) {
                 GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
                 TextView tv = (TextView) gv.getAdapter().getView(position - 1, null, gv);
@@ -101,16 +92,9 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
                         "frequência: " + descricao, Toast.LENGTH_LONG).show();
 
             }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
-    public void ExcluirClick(String descricao_categoria) throws SQLException, ClassNotFoundException{
+    public void ExcluirClick(String descricao_categoria) {
         CategoriaDAO categoriaDAO = new CategoriaDAO();
         Categoria categoria = categoriaDAO.buscaPorNome(descricao_categoria.trim());
 
@@ -123,7 +107,7 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         }
     }
 
-    public void EditarClick(String descricao_categoria) throws SQLException, ClassNotFoundException{
+    public void EditarClick(String descricao_categoria) {
         CategoriaDAO categoriaDAO = new CategoriaDAO();
         Categoria categoria = categoriaDAO.buscaPorNome(descricao_categoria.trim());
         ArrayList <String> prop = new ArrayList<String>();
@@ -141,7 +125,5 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         intent.putExtras(b);
         startActivity( intent);
         finish();
-
-
     }
 }

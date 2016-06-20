@@ -59,18 +59,13 @@ public class SegundaAtividade extends AppCompatActivity
 
 
         findViewsById();
-        try {
 
-            PreencherSpinner();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        PreencherSpinner();
+
 
         Bundle extras = getIntent().getExtras();
 
-        if (extras!=null) {
+        if (extras != null) {
             ArrayList<String> prop = extras.getStringArrayList("categoria");
             preencheControlesAteracao(prop);
             alteracao = true;
@@ -78,7 +73,7 @@ public class SegundaAtividade extends AppCompatActivity
         }
     }
 
-    public void PreencherSpinner() throws SQLException, ClassNotFoundException{
+    public void PreencherSpinner(){
         //DropDown
 
         ArrayAdapter<Frequencia> adapter = new ArrayAdapter<Frequencia>(this,android.R.layout.simple_spinner_item,frequenciaDados.getAllFrequencia()){
@@ -106,7 +101,7 @@ public class SegundaAtividade extends AppCompatActivity
     }
 
     //Salvar/Alterar Categoria
-    public void salvar(View v) throws SQLException, ClassNotFoundException{
+    public void salvar(View v){
         CategoriaDAO categoriaDAO = new CategoriaDAO();
         String tipo ="";
 
