@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 /**
  * Created by tassyosantana on 16/06/16.
@@ -49,8 +50,18 @@ public class WebServiceConnection {
             return soapEnvelope.getResponse();
         } catch (Exception soapFault) {
             soapFault.printStackTrace();
+            return null;
         }
-        return null;
+
+    }
+
+    public boolean isVector(Object response){
+        try {
+            Vector<SoapObject> a = (Vector<SoapObject>) response;
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 
 

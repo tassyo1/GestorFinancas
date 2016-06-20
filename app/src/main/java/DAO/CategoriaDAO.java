@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Vector;
 
 import Model.Categoria;
@@ -113,6 +114,7 @@ public class CategoriaDAO {
         }
     }
 
+
     public ArrayList<Categoria> listaTodasCategorias()  {
         ArrayList<Categoria> array = new ArrayList<>();
 
@@ -125,30 +127,43 @@ public class CategoriaDAO {
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(false);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
+            Categoria categoria;
 
-            for ( SoapObject obj : resposta){
-                Categoria categoria = new Categoria();
+            if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
+                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams,params);
+
+                for (SoapObject obj : resposta) {
+                    categoria = new Categoria();
+                    categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                    categoria.setNome(obj.getProperty("nome").toString());
+                    categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
+                    categoria.setTipo(obj.getProperty("tipo").toString());
+                    categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                    array.add(categoria);
+                }
+            }else{
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams,params);
+                categoria = new Categoria();
                 categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
                 categoria.setNome(obj.getProperty("nome").toString());
-                categoria.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
                 categoria.setTipo(obj.getProperty("tipo").toString());
                 categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
                 array.add(categoria);
             }
+
             return array;
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-
-        return array;
     }
 
     public Categoria buscaPorNome(String nome) {
         soapParams = new ArrayList<>();
-        soapParams.add(0, "http://ws/listaTodasCategorias");
-        soapParams.add(1, "listaTodasCategorias");
+        soapParams.add(0, "http://ws/buscaPorNome");
+        soapParams.add(1, "buscaPorNome");
         soapParams.add(2, "http://ws/");
         soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/CategoriaWebService?WSDL");
         params = new HashMap();
@@ -156,24 +171,23 @@ public class CategoriaDAO {
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(true);
-            params.put("nome",nome);
-            Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams,params);
+            params.put("nome", nome);
+            SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, params);
             Categoria categoria_model = new Categoria();
 
-            for (SoapObject obj: resposta) {
-                categoria_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
-                categoria_model.setNome(obj.getProperty("nome").toString());
-                categoria_model.setDataAgendada(obj.getProperty("data_agendada").toString());
-                categoria_model.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
-                categoria_model.setTipo(obj.getProperty("tipo").toString());
-                categoria_model.setValor(Float.parseFloat (obj.getProperty("valor").toString()));
-            }
+            categoria_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
+            categoria_model.setNome(obj.getProperty("nome").toString());
+            categoria_model.setDataAgendada(obj.getProperty("dataAgendada").toString());
+            categoria_model.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
+            categoria_model.setTipo(obj.getProperty("tipo").toString());
+            categoria_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+
             return categoria_model;
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-        return null;
     }
 
     // categoria com nome já existente
@@ -201,7 +215,6 @@ public class CategoriaDAO {
         return valida;
     }
 
-
     public ArrayList<Categoria> buscaCategoriasEventuais() {
         ArrayList<Categoria> array = new ArrayList<>();
 
@@ -214,13 +227,24 @@ public class CategoriaDAO {
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(false);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
-
-            for ( SoapObject obj : resposta){
-                Categoria categoria = new Categoria();
+            Categoria categoria;
+            if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
+                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, params);
+                for (SoapObject obj : resposta) {
+                    categoria = new Categoria();
+                    categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                    categoria.setNome(obj.getProperty("nome").toString());
+                    categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
+                    categoria.setTipo(obj.getProperty("tipo").toString());
+                    categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                    array.add(categoria);
+                }
+            } else {
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, params);
+                categoria = new Categoria();
                 categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
                 categoria.setNome(obj.getProperty("nome").toString());
-                categoria.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
                 categoria.setTipo(obj.getProperty("tipo").toString());
                 categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
                 array.add(categoria);
@@ -229,9 +253,8 @@ public class CategoriaDAO {
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-
-        return array;
     }
 
     public ArrayList<Categoria> buscaCategoriasFrequentes() {
@@ -246,13 +269,25 @@ public class CategoriaDAO {
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(false);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
+            Categoria categoria;
 
-            for ( SoapObject obj : resposta){
-                Categoria categoria = new Categoria();
+            if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
+                Vector<SoapObject> resposta =(Vector<SoapObject>)  wsc.requestWebService(soapParams, null);
+                for (SoapObject obj : resposta) {
+                    categoria = new Categoria();
+                    categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                    categoria.setNome(obj.getProperty("nome").toString());
+                    categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
+                    categoria.setTipo(obj.getProperty("tipo").toString());
+                    categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                    array.add(categoria);
+                }
+            }else{
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
+                categoria = new Categoria();
                 categoria.setId(Integer.parseInt(obj.getProperty("id").toString()));
                 categoria.setNome(obj.getProperty("nome").toString());
-                categoria.setDataAgendada(obj.getProperty("data_agendada").toString());
+                categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
                 categoria.setTipo(obj.getProperty("tipo").toString());
                 categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
                 array.add(categoria);
@@ -261,8 +296,7 @@ public class CategoriaDAO {
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-
-        return array;
     }
 }

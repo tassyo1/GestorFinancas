@@ -60,10 +60,23 @@ public class MovimentoDAO  {
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(false);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
+            Movimento movimento_model;
 
-            for ( SoapObject obj : resposta){
-                Movimento movimento_model = new Movimento();
+            if (wsc.isVector(wsc.requestWebService(soapParams, null))) {
+                Vector<SoapObject> resposta = (Vector<SoapObject>) wsc.requestWebService(soapParams, null);
+
+                for (SoapObject obj : resposta) {
+                    movimento_model = new Movimento();
+                    movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
+                    movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
+                    movimento_model.setNome_categoria(obj.getProperty("nome").toString());
+                    movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                    movimento_model.setTipo(obj.getProperty("tipo").toString());
+                    array.add(movimento_model);
+                }
+            }else{
+                SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
+                movimento_model = new Movimento();
                 movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
                 movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
                 movimento_model.setNome_categoria(obj.getProperty("nome").toString());
@@ -75,36 +88,34 @@ public class MovimentoDAO  {
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-
-        return array;
     }
 
     public Movimento buscaUltimoMovimento() {
         soapParams = new ArrayList<>();
-        soapParams.add(0, "http://ws/buscaUltimoMovimento");
-        soapParams.add(1, "buscaUltimoMovimento");
-        soapParams.add(2, "http://ws/");
-        soapParams.add(3, "http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
+        soapParams.add(0,"http://ws/buscaUltimoMovimento");
+        soapParams.add(1,"buscaUltimoMovimento");
+        soapParams.add(2,"http://ws/");
+        soapParams.add(3,"http://192.168.1.100:8080/WSConnectionMySQL/MovimentoWebService?WSDL");
 
         try {
             WebServiceConnection wsc = new WebServiceConnection();
             wsc.setTemParametro(false);
-            Vector<SoapObject> resposta =(Vector<SoapObject>) wsc.requestWebService(soapParams,null);
+            SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, null);
             Movimento movimento_model = new Movimento();
 
-            for ( SoapObject obj : resposta){
-                movimento_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
-                movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
-                movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString() ));
-                movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString()) );
-            }
+            movimento_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
+            movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
+            movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
+            movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString()));
+
             return movimento_model;
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
+            return null;
         }
-        return null;
     }
 
     //traz movimentos com categoria passada por parâmetro  que foram lançados hj

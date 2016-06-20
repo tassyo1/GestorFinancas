@@ -44,13 +44,11 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
         ArrayList<String> ar = new ArrayList<String>();
         CategoriaDAO categoriaDAO = new CategoriaDAO();
 
-
         if (categoriaDAO.listaTodasCategorias().size() > 0){
             for (int i =0 ; i< categoriaDAO.listaTodasCategorias().size();i++){
                 ar.add(categoriaDAO.listaTodasCategorias().get(i).getNome());
                 ar.add("Editar");
                 ar.add("Excluir");
-
             }
         }
 
