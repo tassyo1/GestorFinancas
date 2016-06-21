@@ -69,6 +69,7 @@ public class TerceiraAtividade extends AppCompatActivity implements AdapterView.
                 GridView gv = (GridView) findViewById(R.id.gridViewCategoria);
                 TextView tv = (TextView) gv.getAdapter().getView(position - 2, null, gv);
                 ExcluirClick(tv.getText().toString().trim());
+                preencherLista();
             } else {
                 CategoriaDAO categoriaDAO = new CategoriaDAO();
                 Categoria categoria = categoriaDAO.buscaPorNome(((TextView) v).getText().toString().trim());

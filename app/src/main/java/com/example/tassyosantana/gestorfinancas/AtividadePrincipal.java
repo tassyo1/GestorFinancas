@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -1,11 +1,9 @@
 package DAO;
 
-
 import android.util.Log;
 
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +102,8 @@ public class CategoriaDAO {
             wsc.setTemParametro(true);
             params.put("id", id);
 
-            return (Boolean) wsc.requestWebService(soapParams, params);
+            SoapPrimitive soapobj = (SoapPrimitive) wsc.requestWebService(soapParams, params);
+            return Boolean.parseBoolean(soapobj.toString()) ;
         } catch (Exception ex) {
             ex.getStackTrace();
             Log.e("Response ", "Error: " + ex.getMessage());
@@ -173,13 +172,14 @@ public class CategoriaDAO {
             SoapObject obj = (SoapObject) wsc.requestWebService(soapParams, params);
             Categoria categoria_model = new Categoria();
 
-            categoria_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
-            categoria_model.setNome(obj.getProperty("nome").toString());
-            categoria_model.setDataAgendada(obj.getProperty("dataAgendada").toString());
-            categoria_model.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
-            categoria_model.setTipo(obj.getProperty("tipo").toString());
-            categoria_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
-
+            if (obj.getPropertyCount() > 0) {
+                categoria_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
+                categoria_model.setNome(obj.getProperty("nome").toString());
+                categoria_model.setDataAgendada(obj.getProperty("dataAgendada").toString());
+                categoria_model.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
+                categoria_model.setTipo(obj.getProperty("tipo").toString());
+                categoria_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+            }
             return categoria_model;
         } catch (Exception ex) {
             ex.getStackTrace();
@@ -282,6 +282,7 @@ public class CategoriaDAO {
                         categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
                         categoria.setTipo(obj.getProperty("tipo").toString());
                         categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                        categoria.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
                         array.add(categoria);
                     }
                 } else {
@@ -292,6 +293,7 @@ public class CategoriaDAO {
                     categoria.setDataAgendada(obj.getProperty("dataAgendada").toString());
                     categoria.setTipo(obj.getProperty("tipo").toString());
                     categoria.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
+                    categoria.setFrequencia_id(Integer.parseInt(obj.getProperty("frequencia_id").toString()));
                     array.add(categoria);
                 }
             }

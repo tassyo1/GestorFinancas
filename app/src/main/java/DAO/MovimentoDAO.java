@@ -59,7 +59,7 @@ public class MovimentoDAO  {
                         movimento_model = new Movimento();
                         movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
                         movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
-                        movimento_model.setNome_categoria(obj.getProperty("nome").toString());
+                        movimento_model.setNome_categoria(obj.getProperty("nome_categoria").toString());
                         movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
                         movimento_model.setTipo(obj.getProperty("tipo").toString());
                         array.add(movimento_model);
@@ -69,7 +69,7 @@ public class MovimentoDAO  {
                     movimento_model = new Movimento();
                     movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
                     movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
-                    movimento_model.setNome_categoria(obj.getProperty("nome").toString());
+                    movimento_model.setNome_categoria(obj.getProperty("nome_categoria").toString());
                     movimento_model.setValor(Float.parseFloat(obj.getProperty("valor").toString()));
                     movimento_model.setTipo(obj.getProperty("tipo").toString());
                     array.add(movimento_model);
@@ -97,7 +97,6 @@ public class MovimentoDAO  {
             Movimento movimento_model = new Movimento();
 
             movimento_model.setId(Integer.parseInt(obj.getProperty("id").toString()));
-            movimento_model.setData_lancamento(obj.getProperty("data_lancamento").toString());
             movimento_model.setSaldo_atual(Float.parseFloat(obj.getProperty("saldo_atual").toString()));
             movimento_model.setCategoria_id(Integer.parseInt(obj.getProperty("categoria_id").toString()));
 

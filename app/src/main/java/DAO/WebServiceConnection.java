@@ -1,14 +1,17 @@
 package DAO;
 
-
-import android.webkit.WebHistoryItem;
-
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.SoapFault;
+import org.ksoap2.serialization.Marshal;
+import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +48,8 @@ public class WebServiceConnection {
             soapEnvelope.setOutputSoapObject(request);
 
             HttpTransportSE transport = new HttpTransportSE(soapParams.get(3)); //  3URL
+
+            new MarshalDouble().register(soapEnvelope);
             transport.call(soapParams.get(0), soapEnvelope);// 0SOAP_ACTION
 
             return soapEnvelope.getResponse();
@@ -53,6 +58,26 @@ public class WebServiceConnection {
             return null;
         }
 
+    }
+
+    public class MarshalDouble implements Marshal
+    {
+        @Override
+        public Object readInstance(XmlPullParser parser, String namespace, String name,
+                                   PropertyInfo expected) throws IOException, XmlPullParserException {
+
+            return Float.parseFloat(parser.nextText());
+        }
+
+        public void register(SoapSerializationEnvelope cm) {
+            cm.addMapping(cm.xsd, "float", Float.class, this);
+
+        }
+
+        @Override
+        public void writeInstance(XmlSerializer writer, Object obj) throws IOException {
+            writer.text(obj.toString());
+        }
     }
 
     public boolean isVector(Object response){
